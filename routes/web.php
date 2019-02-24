@@ -113,7 +113,7 @@
         Route::post('painel/banners/create', 'painel\BannerController@store')->name('painel.banners.store');
         Route::put('painel/banners/update', 'painel\BannerController@update')->name('painel.banners.updade');
 
-        Route::put('painel/banners/publicar', 'painel\bannerController@publicar')->name('painel.banners.publicar');
+        Route::put('painel/banners/publicar', 'painel\BannerController@publicar')->name('painel.banners.publicar');
 
         //Route::put('painel/banners/publicar/editar', 'painel\bannerController@editarPublicar')->name('painel.banners.editarPublicar');
        
