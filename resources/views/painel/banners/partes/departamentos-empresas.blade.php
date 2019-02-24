@@ -19,7 +19,7 @@
       </div>
 
       <div class="box-footer">
-        {!! Form::submit('Distribuir Banner', ['class' => 'btn btn-primary']); !!}
+        {!! Form::submit('Publicar Banner', ['class' => 'btn btn-primary']); !!}
       </div>
   </div>
 </div>

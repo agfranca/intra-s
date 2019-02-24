@@ -50,8 +50,8 @@ class UsersTableSeeder extends Seeder
         $Usuario3->name = 'Fabio';
         $Usuario3->email = 'fabio@hotmail.com';
         $Usuario3->password = bcrypt('123456');
-        $Usuario3->departamento_id = '1';
-        $Admin->arquivo_id = '1';
+        $Usuario3->departamento_id = '2';
+        $Admin->arquivo_id = NULL;
 		$Usuario3->save();
         $Usuario3->assignRole($UserRole);
         
@@ -59,7 +59,7 @@ class UsersTableSeeder extends Seeder
         $Usuario4->name = 'Cida';
         $Usuario4->email = 'cida@hotmail.com';
         $Usuario4->password = bcrypt('123456');
-        $Usuario4->departamento_id = '1';
+        $Usuario4->departamento_id = '2';
         $Admin->arquivo_id = NULL;
 		$Usuario4->save();
         $Usuario4->assignRole($UserRole);

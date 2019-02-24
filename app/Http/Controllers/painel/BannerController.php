@@ -24,7 +24,7 @@ class BannerController extends Controller
     public function index()
     {
         if(Auth::user()-> hasRole ( 'Admin|User' )){
-        
+        //dd('estou aqui');
         $bannersdousuario = Banner::banners_painel();
         $tree = User::users_painel_tree();
         //$tree = Departamento::departamento_painel();
@@ -172,9 +172,12 @@ class BannerController extends Controller
 
     public function publicar(Request $request)
     {
+      //
+    //$id_banner = $request->banner_id;
+         // dd($id_banner);
+
       //falta Validar Noticias e Departamentos
       if(Auth::user()-> hasRole ( 'Admin')){
-
         //Verificar se foi escolhido algum departamento
         $departamento = $request->resultado2;
         $pos = strpos($departamento,"D");
@@ -182,13 +185,16 @@ class BannerController extends Controller
          $request->flash();
          return redirect()
          ->back()
-         ->with('errors', 'Selecione um departamento. As Notícias são vinculadas em Departamentos.');
+         ->with('errors', 'Selecione um departamento. As Notícias são vinculadas aos Departamentos.');
        }else{
-        
+        //Quando um departamento por Escolhido
+
+
           //Separa os departamentos das empresas
           $departamento2 = explode(",", $departamento);
           
           //dd($departamento2);
+          //Cria o Campo para Departamento Filho
           static $departamentosfilhos=[];
           $departamentosfilhos = collect($departamentosfilhos);
         
@@ -201,8 +207,8 @@ class BannerController extends Controller
           }
         
           //dd($departamentosfilhos);
-          //Cria e Salva o Departamento_Noticia
-
+          
+          //Cria e Salva o Banner_Departamento
           foreach ($departamentosfilhos as $departamento) {
                    // dd($departamento);
             $banner_departamento = new Banner_Departamento;
@@ -211,8 +217,8 @@ class BannerController extends Controller
             $banner_departamento -> banner_id = $request->banner_id;
 
             $banner_departamento_id = Departamento::where('id',$departamento)->get()->first();
-                    //dd($empresa_departamento_id);
-                    //dd($empresa_departamento_id->empresa_id);
+                    //dd($banner_departamento_id);
+                    //dd($banner_departamento_id->empresa_id);
             $banner_departamento -> empresa_id = $banner_departamento_id->empresa_id;
                     //dd($departamento_noticia -> noticia_id);
             $banner_departamento -> save();
@@ -284,7 +290,7 @@ public function editarPublicar(Banner $banner)
             $value3[$id]= $item.'D';
         }
         $banners_restore = json_encode($value3);
-       //dd($noticias_restore);
+       //dd($banners_restore);
        // dd($departamento_noticias_lista_restore);   
         return view('painel.banners.publicar.editar',compact('bannersdousuario','banners_restore','tree','bannerEditar')); 
 
@@ -303,6 +309,7 @@ public function editarPublicar(Banner $banner)
         //Transformando o Texto Json em Array
         $departamento_anterior = json_decode($departamento_a);
         //dd($departamento_anterior);
+        
         //Pegando a lista de departamento selecionada apos edição
         $departamento = $request->resultado2;
         //transformando em um Array
@@ -313,7 +320,7 @@ public function editarPublicar(Banner $banner)
                 $departamento_atual[$id] =$departamento3;
             }
         }
-
+          //dd($departamento_anterior);
           //dd($departamento_atual);
           //dd(array_count_values($departamento_atual));
 

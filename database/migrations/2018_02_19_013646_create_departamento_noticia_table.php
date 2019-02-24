@@ -19,7 +19,7 @@ class CreateDepartamentoNoticiaTable extends Migration
             $table->integer('noticia_id')->unsigned();
             $table->integer('empresa_id')->unsigned();
             $table->integer('user_id')->unsigned();
-            $table->integer('redistribuir_noticias_id');
+            $table->integer('redistribuir_noticias_id')->nullable();
             $table->timestamps();
         });
     }

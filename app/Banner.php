@@ -22,25 +22,25 @@ public function arquivo()
 
  public static function banners_painel()
  {
-
 //testa se o usuario logado é Administrador
   $admin =  Auth::user()-> hasRole ( 'Admin' );
 //retorna o id do departamento do usuario logado
   $departamento_id = Auth::user()->departamento_id;
-
+//retorna o id do usuario logado
+  $user = Auth::user()->id;
+  
+  static $todosbanners=[];
+  $todosbanners = collect($todosbanners);
 
   if($admin == 'true') {
-
+   //dd("É Admin");
    $todosdepartamentos = Departamento::departamento_painel();
-    //dd($todosdepartamentos);
-   
-   static $todosbanners=[];
-   $todosbanners = collect($todosbanners);
+  //dd($todosdepartamentos);
    
    foreach ($todosdepartamentos as $departamento) {
-              //dd($departamento);
+    //dd($departamento);
     $bannersdodepartamento = Banner_Departamento::bannersdodepartamento($departamento->id);
-            //dd($noticiasdodepartamento);
+    //dd($bannersdodepartamento);
     if (!is_null($bannersdodepartamento)) {
 
       foreach ($bannersdodepartamento as $bannerdodepartamento) {
@@ -50,50 +50,41 @@ public function arquivo()
 
    }
  }
+
+//dd($user);
+ //Banners não publicados do Usuario Logado
+ $bannersNaoPublicado = Banner::where([['user_id',$user],['publicado','N'] ])->orderBy('updated_at', 'desc')->get()->all();
+
+//dd($bannersNaoPublicado);
+
+if (!is_null($bannersNaoPublicado)) {
+      foreach ($bannersNaoPublicado as $bannerdousuario) {
+       $todosbanners->push($bannerdousuario);
+     }
+   }
+
+//dd('Quase no fim');
 //dd($todosbanners);
  return $todosbanners->unique();
 
 
 }else {
-            //Quando estiver Logado o Usuário
-            //Retorna as Noticias do Usuario
-            //Falta verificar -----  
-            //$bannersdousuario = Banner_Departamento::bannersdodepartamento($departamento_id);
-            //dd($bannersdousuario);
-            //return $bannersdousuario; 
+  //Banners dos Usuarios Não Administradores
 
-/*
-            static $todosbanners=[];
-            $todosbanners = collect($todosbanners);
+  //Banners não publicados do Usuario Logado
+ $bannersdoUsuarioNãoAdmin = Banner::where([['user_id',$user]])->orderBy('updated_at', 'desc')->get()->all();
 
-            $bannersdodepartamento = Banner_Departamento::bannersdodepartamento($departamento_id);
-            //dd($noticiasdodepartamento);
-            if (!is_null($bannersdodepartamento)) {
-              foreach ($bannersdodepartamento as $bannerdodepartamento) {
-              $banner = Banner::where('id',$bannerdodepartamento->banner_id)->get()->first(); 
-              $todosbanners->push($banner);
-              }
-            }
-
-
-            dd($todosbanners);
-
-*/
-
-
-            //listar os banner cadastrados pelo usuario  
-
- $user = Auth::user()->id;
-
- $bannersNaoPublicado = Banner::where([['user_id',$user]])->orderBy('id', 'desc')->get()->all();
 //dd($bannersNaoPublicado);
- return $bannersNaoPublicado;
 
+if (!is_null($bannersdoUsuarioNãoAdmin)) {
+      foreach ($bannersdoUsuarioNãoAdmin as $bannerdousuario) {
+       $todosbanners->push($bannerdousuario);
+     }
+   }
 
-
-
-
-
+//dd('Quase no fim');
+//dd($todosbanners);
+ return $todosbanners->unique();
 
          }
 

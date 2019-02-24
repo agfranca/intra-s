@@ -162,16 +162,19 @@
                 <tbody>
                                     
                 @foreach($bannersdousuario as $banner)
-                	<tr>
-                		<td>{{ $banner -> titulo}}</td>
+           	
+                  <tr>
+                		{{-- Titulo da Lista --}}
+                    <td>{{ $banner -> titulo}}</td>
+                    {{-- Imagem da Lista --}}
                     <td><img src="{{ $banner->arquivo->url}}" alt="{{ $banner -> titulo}}" height="50" width="150"></td>
                 		<!-- <td>{{ $banner -> departamento_id}}</td> -->
                 		<td>
-                		
+                		{{-- Botoes da Lista --}}
 
                       <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#myModal"><i class="fa fa-pencil"></i> </button>
 
-                      <!-- Modal -->
+                      <!-- Modal EDITAR TITULO-->
                       <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                         <div class="modal-dialog" role="document">
                           <div class="modal-content">
@@ -194,15 +197,56 @@
 
                               <button type="submit" class="btn btn-primary">Salvar</button>
                             </div>
-</div>
+                        </div>
                               {!! Form::close() !!}
                         </div>
                       </div>
+                      <!-- FIM Modal EDITAR TITULO-->
+
 
 
                       @if($banner -> publicado =='N')
                           @role('Admin')
-                          <button class="btn btn-xs btn-success" data-toggle="modal" data-target="#ModalPublicar" title="Distribuir"> Publicar </button>
+                          <button class="btn btn-xs btn-success" data-toggle="modal" data-target="#ModalPublicar" title="Publicar"> Publicar </button>
+
+<!-- Modal Publicar -->
+                      <div class="modal fade" id="ModalPublicar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              <h4 class="modal-title" id="myModalLabel">Publicar o Banner </h4>
+                            </div>
+                            <div style="padding:0; margin: 0" class="modal-body">
+                              {!! Form::open(['route' =>['painel.banners.publicar',$banner->id],'method' => 'PUT','class'=>'form-horizontal']) !!}
+
+                                <input type="hidden" value="" name="resultado2" id="resultado2" required="">
+
+                                <input type="hidden" value="{{ $banner -> id}}" name="banner_id" id="banner_id" required="">
+
+                                <!-- INcluir o JStree aqui -->
+                                @include('painel.banners.partes.departamentos-empresas')     
+                              {!! Form::close() !!}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+<!-- FIM MODAL Publicar -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                           @endrole
                           
                           @role('User')
@@ -218,7 +262,7 @@
                           @endrole
 
                          
-                        @else
+                      @else
                         @role('Admin')
                         <form method="POST" action="/painel/banners/publicar/editar/{{$banner->id}}" style="display: inline">
                           {{csrf_field()}}  
@@ -227,7 +271,7 @@
                         @endrole
 
                 
-                        @endif
+                      @endif
                            
 
                       
@@ -251,28 +295,10 @@
 
 
 
-<!-- Modal Publicar -->
-                      <div class="modal fade" id="ModalPublicar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                        <div class="modal-dialog" role="document">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                              <h4 class="modal-title" id="myModalLabel">Publicar o Banner</h4>
-                            </div>
-                            <div style="padding:0; margin: 0" class="modal-body">
-                              {!! Form::open(['route' =>['painel.banners.publicar',$banner->id],'method' => 'PUT','class'=>'form-horizontal']) !!}
 
-                                <input type="hidden" value="" name="resultado2" id="resultado2" required="">
 
-                                <input type="hidden" value="{{ $banner -> id}}" name="banner_id" id="banner_id" required="">
 
-                                <!-- INcluir o JStree aqui -->
-                                @include('painel.banners.partes.departamentos-empresas')     
-                              {!! Form::close() !!}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+
 
 
                 @endforeach

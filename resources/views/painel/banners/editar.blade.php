@@ -248,6 +248,7 @@
                               <h4 class="modal-title" id="myModalLabel">Publicar o Banner</h4>
                             </div>
                             <div style="padding:0; margin: 0" class="modal-body">
+                              
                               {!! Form::open(['route' =>['painel.banners.publicar',$banner->id],'method' => 'PUT','class'=>'form-horizontal']) !!}
 
                                 <input type="hidden" value="" name="resultado2" id="resultado2" required="">
