@@ -24,6 +24,7 @@ class UsersTableSeeder extends Seeder
         $Admin->email = 'alexandre_franca@hotmail.com';
         $Admin->password = bcrypt('123456');
         $Admin->departamento_id = '1';
+		$Admin->arquivo_id = '';
         $Admin->save();
         $Admin->assignRole($AdminRole);
     
@@ -32,7 +33,8 @@ class UsersTableSeeder extends Seeder
         $Usuario1->email = 'andre@hotmail.com';
         $Usuario1->password = bcrypt('123456');
         $Usuario1->departamento_id = '2';
-        $Usuario1->save();
+        $Admin->arquivo_id = '';
+		$Usuario1->save();
         $Usuario1->assignRole($UserRole);
 
         $Usuario2 = new User;
@@ -40,7 +42,8 @@ class UsersTableSeeder extends Seeder
         $Usuario2->email = 'tonho@hotmail.com';
         $Usuario2->password = bcrypt('123456');
         $Usuario2->departamento_id = '3';
-        $Usuario2->save();
+        $Admin->arquivo_id = '';
+		$Usuario2->save();
         $Usuario2->assignRole($AdminRole);
         
         $Usuario3 = new User;
@@ -48,7 +51,8 @@ class UsersTableSeeder extends Seeder
         $Usuario3->email = 'fabio@hotmail.com';
         $Usuario3->password = bcrypt('123456');
         $Usuario3->departamento_id = '1';
-        $Usuario3->save();
+        $Admin->arquivo_id = '';
+		$Usuario3->save();
         $Usuario3->assignRole($UserRole);
         
         $Usuario4 = new User;
@@ -56,7 +60,8 @@ class UsersTableSeeder extends Seeder
         $Usuario4->email = 'rodrigo@hotmail.com';
         $Usuario4->password = bcrypt('123456');
         $Usuario4->departamento_id = '1';
-        $Usuario4->save();
+        $Admin->arquivo_id = '';
+		$Usuario4->save();
         $Usuario4->assignRole($UserRole);
     
     }
