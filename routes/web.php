@@ -42,7 +42,7 @@
 
     //Route::group(['prefix'=> 'painel'],function(){
 
-        Route::get('painel', 'painel\PainelController@index')->name('painel.index');
+        //Route::get('painel', 'painel\PainelController@index')->name('painel.index');
         Route::get('painel/departamento', 'DepartamentoController@index')->name('painel.departamento');
         
         //PERFIL
