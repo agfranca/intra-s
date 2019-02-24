@@ -119,7 +119,7 @@
        
         Route::post('painel/banners/publicar/editar/{banner}','painel\BannerController@editarPublicar', function (App\Banner $banner) { return $banner;});     
 
-        Route::put('painel/banners/publicar/editar/{banner}','painel\BannerController@updatePublicar', function (App\Banner $banner) { return $banner;});     
+        Route::put('painel/banners/publicar/editar/{banner}','painel\BannerController@updatePublicar', function (App\Banner $banner) { return $banner;})->name('painel.banners.editarPublicar');     
 
         //Route::put('painel/banners/{banner}/update', 'painel\BannerController@update', function (App\Banner $banner) { return $banner;});
        
