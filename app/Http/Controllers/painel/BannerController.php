@@ -172,7 +172,7 @@ class BannerController extends Controller
 
     public function publicar(Request $request)
     {
-      //
+    dd('Estou Aqui');
     //$id_banner = $request->banner_id;
          // dd($id_banner);
 
