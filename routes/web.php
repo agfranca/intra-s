@@ -94,14 +94,11 @@
 
 
     Route::group (['middleware'=>['role:Admin|User', 'auth']], function () { 
-<<<<<<< HEAD
         
 		Route::get('painel', 'painel\PainelController@index')->name('painel.index');
 		
-		//Noticias
-=======
+
         //Noticias
->>>>>>> parent of 6e4bbc8... Ainda ajuste na rota
         Route::get('painel/noticias', 'painel\NoticiaController@index')->name('painel.noticias.index');
         Route::get('painel/noticias/create', 'painel\NoticiaController@create')->name('painel.noticias.create');
         Route::post('painel/noticias/create', 'painel\NoticiaController@store')->name('painel.noticias.store');
