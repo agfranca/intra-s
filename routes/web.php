@@ -40,17 +40,17 @@
     Route::get('/', 'HomeController@index');
     Route::get('/home', 'HomeController@index')->name('home');
 
-    Route::group(['prefix'=> 'painel'],function(){
+    //Route::group(['prefix'=> 'painel'],function(){
 
-        Route::get('/', 'painel\PainelController@index')->name('painel');
+        Route::get('painel', 'painel\PainelController@index')->name('painel');
         Route::get('/departamento', 'DepartamentoController@index')->name('painel.departamento');
         
         //PERFIL
-        Route::get('/perfil', 'painel\PerfilController@index')->name('perfil');
-        Route::post('/perfil/update', 'painel\PerfilController@store')->name('perfil.update');
+        Route::get('painel/perfil', 'painel\PerfilController@index')->name('perfil');
+        Route::post('painel/perfil/update', 'painel\PerfilController@store')->name('perfil.update');
 
 
-    });
+    //});
 
 //if(Auth::check()) {
         
