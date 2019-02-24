@@ -95,7 +95,7 @@
 
     Route::group (['middleware'=>['role:Admin|User', 'auth']], function () { 
         
-		Route::get('painel', 'painel\PainelController@index')->name('painel.index');
+		Route::get('painel', 'painel\PainelController@index')->name('painel');
 		
 
         //Noticias

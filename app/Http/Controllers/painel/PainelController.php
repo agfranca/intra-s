@@ -12,7 +12,6 @@ class PainelController extends Controller
      *
      * @return void
      */
-	 
     public function __construct()
     {
         $this->middleware('auth');
@@ -23,11 +22,10 @@ class PainelController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    
-	public function index()
+    public function index()
     {
         //return view('home');
-        return view('painel.index');
+        return view('painel\index');
     }
 
     public function perfil()
