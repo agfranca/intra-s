@@ -42,7 +42,7 @@
 
     //Route::group(['prefix'=> 'painel'],function(){
 
-        Route::get('painel', 'painel\PainelController@index')->name('painel');
+        
         Route::get('painel/departamento', 'DepartamentoController@index')->name('painel.departamento');
         
         //PERFIL
@@ -94,7 +94,10 @@
 
 
     Route::group (['middleware'=>['role:Admin|User', 'auth']], function () { 
-        //Noticias
+        
+		Route::get('painel', 'painel\PainelController@index')->name('painel');
+		
+		//Noticias
         Route::get('painel/noticias', 'painel\NoticiaController@index')->name('painel.noticias.index');
         Route::get('painel/noticias/create', 'painel\NoticiaController@create')->name('painel.noticias.create');
         Route::post('painel/noticias/create', 'painel\NoticiaController@store')->name('painel.noticias.store');
