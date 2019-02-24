@@ -14,7 +14,7 @@ class DepartamentosTableSeeder extends Seeder
         Departamento::truncate();
 
         $DepartamentoA = new Departamento;
-        $DepartamentoA->nome = 'Núcleo de Comunicação';
+        $DepartamentoA->nome = 'Seguranca';
         $DepartamentoA->empresa_id = 1;
         $DepartamentoA->save();
 

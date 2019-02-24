@@ -14,11 +14,11 @@ class EmpresasTableSeeder extends Seeder
          Empresa::truncate();
 
         $EmpresaA = new Empresa;
-        $EmpresaA->nome = 'FECOMÉRCIO SE';
+        $EmpresaA->nome = 'Raiz';
         $EmpresaA->save();
 
         $EmpresaB = new Empresa;
-        $EmpresaB->nome = 'SENAC SE';
+        $EmpresaB->nome = 'FECOMERCIO SE';
         $EmpresaB->empresa_pai = 1;
         $EmpresaB->save();
     }
