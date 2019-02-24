@@ -25,7 +25,7 @@ class PainelController extends Controller
     public function index()
     {
         //return view('home');
-        return view('painel\index');
+        return view('painel.index');
     }
 
     public function perfil()

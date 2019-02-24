@@ -41,8 +41,9 @@
     Route::get('/home', 'HomeController@index')->name('home');
 
     //Route::group(['prefix'=> 'painel'],function(){
-
-        //Route::get('painel', 'painel\PainelController@index')->name('painel.index');
+		
+		Route::get('painel', 'painel\PainelController@index')->name('painel');
+        
         Route::get('painel/departamento', 'DepartamentoController@index')->name('painel.departamento');
         
         //PERFIL
@@ -95,7 +96,7 @@
 
     Route::group (['middleware'=>['role:Admin|User', 'auth']], function () { 
         
-		Route::get('painel', 'painel\PainelController@index')->name('painel');
+		
 		
 
         //Noticias
