@@ -300,11 +300,11 @@ public function editarPublicar(Banner $banner)
 
  public function updatePublicar(Request $request, Banner $banner)
     {
-       //Fazer validacao de dados 
+//Fazer validacao de dados 
 
-        //Atualizando dados da Publicação
+//Atualizando dados da Publicação
 
-        //Pegando a Lista de departamento Antiga enviada para edição
+    //Pegando a Lista de departamento Antiga enviada para edição
         $departamento_a = $request->resultado1;
         //Transformando o Texto Json em Array
         $departamento_anterior = json_decode($departamento_a);
@@ -321,8 +321,13 @@ public function editarPublicar(Banner $banner)
             }
         }
           //dd($departamento_anterior);
+          
+            
           //dd($departamento_atual);
           //dd(array_count_values($departamento_atual));
+
+
+
 
         //Verificando o que tem que remover
         $departamento_remover = array_diff ( $departamento_anterior , $departamento_atual);
@@ -332,14 +337,27 @@ public function editarPublicar(Banner $banner)
 
         
 
-        //Testando para saber o que fazer adicionar, remover ou somente reditrecionar 
+//Testando para saber o que fazer adicionar, remover ou somente reditrecionar 
 
 
-        //REMOVEU TUDO vai despublicar
-        if ($departamento_atual[0]==""){
+//REMOVEU TUDO vai despublicar
 
-        //Só remove e não Adiociona
-          
+
+      //if (is_array($departamento_atual)) {   
+       //  if ($departamento_atual[0]==""){
+     // if (array_count_values($departamento_atual)==NULL){
+        $contar=0;
+        foreach ($departamento_atual as $temconteudo ) {
+          if ($temconteudo!="") {
+          $contar=$contar+1;  
+          }  
+        }
+  //dd($contar);
+
+
+        if ($contar==0) {
+//Só remove e não Adiociona
+          //dd('Alexandre');
           foreach ($departamento_remover as $departamento) {
                // dd($departamento);
                 $banner_id = $banner->id;
@@ -353,7 +371,7 @@ public function editarPublicar(Banner $banner)
                 //dd($remover);
                 $remover->delete();
           }
-
+          //dd('Alexandre');
           $banner->publicado = 'N';
           $banner->save();
           
@@ -365,10 +383,10 @@ public function editarPublicar(Banner $banner)
         }
 
 
-
+//Redirecionar pois não houve mudança
         if (array_count_values($departamento_remover)==NULL AND array_count_values($departamento_adicionar)==NULL) {
 
-           //Redirecionar pois não houve mudança
+           
             //echo "Não tenho o que fazer";
             return redirect()
                    ->route('painel.banners.index')   
@@ -376,7 +394,8 @@ public function editarPublicar(Banner $banner)
         }else{
 
         if (array_count_values($departamento_remover)<>NULL AND array_count_values($departamento_adicionar)==NULL) {
-           //Só remove e não Adiociona
+
+//Só remove e não Adiociona
           
           foreach ($departamento_remover as $departamento) {
                // dd($departamento);
@@ -401,7 +420,7 @@ public function editarPublicar(Banner $banner)
         }else{
         
         if (array_count_values($departamento_remover)==NULL AND array_count_values($departamento_adicionar)<>NULL) {
-           //Só Adiciona e não Remove
+//Só Adiciona e não Remove
 
           foreach ($departamento_adicionar as $departamento) {
                // dd($departamento);
@@ -432,7 +451,8 @@ public function editarPublicar(Banner $banner)
 
 
         if (array_count_values($departamento_remover)<>NULL AND array_count_values($departamento_adicionar)<>NULL) {
-           // Remove e Adiciona ao mesmo tempo
+
+// Remove e Adiciona ao mesmo tempo
 
           //REMOVER
           foreach ($departamento_remover as $departamento) {
