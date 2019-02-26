@@ -41,7 +41,7 @@ class PerfilController extends Controller
     public function store(Request $request)
     {
     
-
+    //Atualizando a IMAGEM do PERFIL
     //Recuperando o Arquivo enviado e seus atributos.
      $arquivo = request()->file('file');
      $file['nome'] = $arquivo->getClientOriginalName();
@@ -95,9 +95,52 @@ class PerfilController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        //Atualizar o perfil do usuário
+        $user = user::where('id',$request->get('iduser'))->get()->first();
+        
+        //Variavel da Mensagem ao Usuario
+        $Mensagem = "";           
+        //Testar se nome foi trocada
+        if ($request->get('nome')==$user->name) {
+            //dd("Não faz nada");
+        }else{
+            $user->name = $request->get('nome');
+            $Mensagem .=" Nome,";
+        }         
+
+        //Testar se email foi trocada
+        if ($request->get('email')==$user->email) {
+            //dd("Não faz nada");
+        }else{
+            $user->email = $request->get('email');
+            $Mensagem .= " Email,";
+        }
+
+        //Testar se senha foi trocada
+        if ($request->get('senha')==NULL) {
+            //dd("Não faz nada na senha");
+        }else{
+            $user->password = bcrypt($request->get('senha'));
+            $Mensagem .= " Senha,";
+        }
+        //dd($user);
+        $user->save();
+
+        //Qual Mensagem vai para o Usuário
+        if ($Mensagem=="") {
+             return redirect()
+                   ->route('perfil')   
+                   ->with('sucess','Perfil Não Foi Modificado');
+        }else{
+            return redirect()
+                   ->route('perfil')   
+                   ->with('sucess', $Mensagem.' campo(s) atualizado(s) com Sucesso');
+        }
+
+        
+
     }
 
     /**

@@ -162,16 +162,24 @@
               <!-- END SIDEBAR BUTTONS -->
       </div>
     </div>
-  
+
+    <?php
+    $usuario = Auth::user();
+    ?>
+
     <div class="col-md-10 col-lg-10">
       <div class="profile-content">
-        <form class="form-horizontal">
+        {!! Form::open(['route' =>['perfil.update.dados'],'method' => 'PUT','class'=>'form-horizontal']) !!}
+        {{-- <form class="form-horizontal"> --}}
           <fieldset>
+
+            <input id="iduser" name="iduser" type="hidden" value="{{ Auth::user()->id}}">
+
             <!-- Text input-->
               <div  class="form-group">
                 <label class="col-md-2 col-lg-2 control-label" for="textinput">Nome:</label>  
                   <div class="col-md-8 col-lg-8">
-                    <input id="textinputnome" name="textinputname" type="text" placeholder="placeholder" class="form-control input-md" value="{{ Auth::user()->name}}">
+                    <input id="textinputnome" name="nome" type="text" placeholder="placeholder" class="form-control input-md" value="{{ Auth::user()->name}}">
                   </div>
               </div>
 
@@ -179,14 +187,14 @@
                   <div class="form-group">
                     <label class="col-md-2 col-lg-2 control-label" for="textinput">E-mail:</label>  
                       <div class="col-md-8 col-lg-8">
-                        <input id="textinputemail" name="textinputemail" type="text" placeholder="placeholder" class="form-control input-md" value="{{ Auth::user()->email }}">
+                        <input id="textinputemail" name="email" type="text" placeholder="placeholder" class="form-control input-md" value="{{ Auth::user()->email }}">
                       </div>
                   </div>
                       <!-- Password input-->
                       <div class="form-group">
                         <label class="col-md-2 col-lg-2 control-label" for="passwordinput">Senha:</label>
                           <div class="col-md-8 col-lg-8">
-                            <input id="passwordinput" name="passwordinput" type="password" placeholder="Digite nova Senha, caso deseje modificar." class="form-control input-md">
+                            <input id="passwordinput" name="senha" type="password" placeholder="Digite nova Senha, caso deseje modificar." class="form-control input-md">
                           </div>
                       </div>
 
@@ -194,13 +202,15 @@
                           <div class="form-group">
                             <div class="col-md-10 col-lg-10" >
                               <div class=text-right >
-                                <button id="button1id" name="button1id" class="btn btn-success input-md">Salvar Modificações</button>
+                                <button type="submit" id="button1id" name="button1id" class="btn btn-success input-md">Salvar Modificações</button>
+                              
                               </div>
                             </div>
                           </div>
 
                         </fieldset>
-                        </form>
+                        {{ Form::close() }}
+                        {{-- </form> --}}
       </div>
     </div>
   {{-- FIM Informações do Usuário --}}  

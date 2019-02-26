@@ -49,6 +49,7 @@
         //PERFIL
         Route::get('painel/perfil', 'painel\PerfilController@index')->name('perfil');
         Route::post('painel/perfil/update', 'painel\PerfilController@store')->name('perfil.update');
+        Route::put('painel/perfil/update', 'painel\PerfilController@update')->name('perfil.update.dados');
 
 
     //});
