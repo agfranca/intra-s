@@ -42,14 +42,7 @@
 
     //Route::group(['prefix'=> 'painel'],function(){
 		
-		Route::get('painel', 'painel\PainelController@index')->name('painel');
-        
-        Route::get('painel/departamento', 'DepartamentoController@index')->name('painel.departamento');
-        
-        //PERFIL
-        Route::get('painel/perfil', 'painel\PerfilController@index')->name('perfil');
-        Route::post('painel/perfil/update', 'painel\PerfilController@store')->name('perfil.update');
-        Route::put('painel/perfil/update', 'painel\PerfilController@update')->name('perfil.update.dados');
+
 
 
     //});
@@ -97,7 +90,14 @@
 
     Route::group (['middleware'=>['role:Admin|User', 'auth']], function () { 
         
-		
+        //PAINEL
+        Route::get('painel', 'painel\PainelController@index')->name('painel');
+        Route::get('painel/departamento', 'DepartamentoController@index')->name('painel.departamento');
+        
+        //PERFIL
+        Route::get('painel/perfil', 'painel\PerfilController@index')->name('perfil');
+        Route::post('painel/perfil/update', 'painel\PerfilController@store')->name('perfil.update');
+        Route::put('painel/perfil/update', 'painel\PerfilController@update')->name('perfil.update.dados');
 		
 
         //Noticias
