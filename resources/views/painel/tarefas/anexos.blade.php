@@ -64,7 +64,7 @@
                     {{-- <a class = "btn btn-aviso btn-modify pull-right" href="javascript:history.back()"> <i class="glyphicon glyphicon-arrow-up"></i> Voltar</a> --}}
   </div>
 
-<?php print $iPreviewConfig;?>
+
 
 
 
