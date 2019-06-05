@@ -19,7 +19,7 @@
       </div>
 
       <div class="box-footer">
-        {!! Form::submit('Cadastrar Empresa', ['class' => 'btn btn-primary']); !!}
+        {!! Form::submit('Cadastrar Departamento', ['class' => 'btn btn-primary']); !!}
       </div>
   </div>
 </div>
