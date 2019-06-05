@@ -54,6 +54,7 @@
 </div>
 
 <!-- INcluir o JStree aqui -->
+
 @include('painel.departamentos.partes.empresas')
 
 {!! Form::close() !!}

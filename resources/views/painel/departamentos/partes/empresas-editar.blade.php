@@ -10,6 +10,10 @@
       <div class="box-body">
       <p style="text-align: left;" class="control-label text-left"> <b>Subordinado a</b> </p> 
        <input type="hidden" value="" name="resultado2" id="resultado2" required="">
+       <input type="hidden" value="" name="empresa-id" id="empresa-id" required="">
+       <input type="hidden" value="" name="departamento_pai" id="departamento_pai">
+
+
       <div id="tree">
         sdasd
       </div>  
@@ -25,9 +29,11 @@
 
 
 <?php
-$departamento_restore = $departamento->empresa_id;
+//$departamento_restore = $departamento->empresa_id;
+//Enviando a INformação para CArregar a seleção 
+$departamento_restore = (is_null($departamento->departamento_pai)) ? $departamento->empresa_id : $departamento->departamento_pai."D" ; 
 
-//var_dump($departamento_restore);
+var_dump($departamento_restore);
 //var_dump($tree);
 
 ?>
@@ -76,10 +82,14 @@ function treeLoaded(event, data) {
     var i, j, r = [];
     for(i = 0, j = data.selected.length; i < j; i++) {
       r.push(data.instance.get_node(data.selected[i]).id);
+      //Fezer uma pesquisa quando o que retornar contiver a letra D e montar duas variaveis departamento e empresa.
+
+  //    if(r.match(/D/)){
+  //    alert('string encontrada');
+  //    }
+
       //var id = data.selected[0].id
     }
-
-
 
 
 

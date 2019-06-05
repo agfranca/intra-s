@@ -77,11 +77,35 @@
                       @if($usuario->hasRole('Admin'))
 
                       <form method="GET" action="{{route('painel.usuarios.desabilitaradm', $usuario)}}" style="display: inline">
-                      <button class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Desabilitar como Administrador"> <i class="fa fa-black-tie"></i> </button>
+                      <button class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Desabilitar como Administrador Empresa"> <i class="fa fa-black-tie"></i> </button>
                       </form>
                       @else
+                      
                       <form method="GET" action="{{route('painel.usuarios.habilitaradm', $usuario)}}" style="display: inline">
-                      <button class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="top" title="Habilitar como Administrador"> <i class="fa fa-black-tie"></i> </button>
+                      <button class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="top" title="Habilitar como Administrador Empresa"> <i class="fa fa-black-tie"></i> </button>
+                      </form>
+                      @endif
+
+                      @if($usuario->hasRole('AdminSetor'))                      
+
+                      <form method="GET" action="{{route('painel.usuarios.desabilitaradm', $usuario)}}" style="display: inline">
+                      <button class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Habilitar como Administrador do Setor"> <i class="fa fa-sitemap"></i> </button>
+                      </form>
+                      @else
+                      <form method="GET" action="{{route('painel.usuarios.habilitaradmsetor', $usuario)}}" style="display: inline">
+                      <button class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="top" title="Habilitar como Administrador do Setor"> <i class="fa fa-sitemap"></i> </button>
+                      </form>
+                      @endif
+                      @endrole
+
+                      @role('AdminSetor')
+                      @if($usuario->hasRole('AdminSetor'))                      
+                      <form method="GET" action="{{route('painel.usuarios.desabilitaradm', $usuario)}}" style="display: inline">
+                      <button class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Habilitar como Administrador do Setor"> <i class="fa fa-sitemap"></i> </button>
+                      </form>
+                      @else
+                      <form method="GET" action="{{route('painel.usuarios.habilitaradmsetor', $usuario)}}" style="display: inline">
+                      <button class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="top" title="Habilitar como Administrador do Setor"> <i class="fa fa-sitemap"></i> </button>
                       </form>
                       @endif
                       @endrole

@@ -21,9 +21,13 @@ class BannerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    
+    
+
+
     public function index()
     {
-        if(Auth::user()-> hasRole ( 'Admin|User' )){
+        if(Auth::user()-> hasRole ( 'Admin|User|AdminSetor' )){
         //dd('estou aqui');
         $bannersdousuario = Banner::banners_painel();
         $tree = User::users_painel_tree();
@@ -177,16 +181,26 @@ class BannerController extends Controller
          // dd($id_banner);
 
       //falta Validar Noticias e Departamentos
-      if(Auth::user()-> hasRole ( 'Admin')){
+      if(Auth::user()-> hasRole ( 'Admin|AdminSetor')){
         //Verificar se foi escolhido algum departamento
         $departamento = $request->resultado2;
+        //dd($departamento);
+        if (Auth::user()-> hasRole ( 'Admin')) {
         $pos = strpos($departamento,"D");
-        if($pos ===false){
+        }else{
+         $pos = $departamento; 
+        }
+        if($pos===false){
          $request->flash();
          return redirect()
          ->back()
          ->with('errors', 'Selecione um departamento. As Notícias são vinculadas aos Departamentos.');
-       }else{
+          }elseif(is_null($pos)){
+              $request->flash();
+              return redirect()
+              ->back()
+              ->with('errors', 'Selecione um departamento. As Notícias são vinculadas aos Departamentos.');
+          }else{
         //Quando um departamento por Escolhido
 
 
@@ -200,9 +214,12 @@ class BannerController extends Controller
         
           //Departamentos escolhidos 
           foreach ($departamento2 as $departamentofiltrado) {
+            
             if (!is_numeric($departamentofiltrado)) {
               $departamentotrim = trim($departamentofiltrado,"D");
               $departamentosfilhos->push($departamentotrim);
+            }elseif(Auth::user()-> hasRole ( 'AdminSetor')){
+              $departamentosfilhos->push($departamentofiltrado);
             }
           }
         
@@ -212,6 +229,7 @@ class BannerController extends Controller
           foreach ($departamentosfilhos as $departamento) {
                    // dd($departamento);
             $banner_departamento = new Banner_Departamento;
+            
             $banner_departamento -> departamento_id = $departamento;
                     //dd($departamento_noticia -> departamento_id);
             $banner_departamento -> banner_id = $request->banner_id;
@@ -286,10 +304,14 @@ public function editarPublicar(Banner $banner)
         //dd($noticia->id);
         $value = $banner_departamento_lista_restore->implode('departamento_id',',');
         $value2 = explode(",", $value);
+        if(Auth::user()-> hasRole ( 'Admin')){
         foreach ($value2 as $id => $item) {
             $value3[$id]= $item.'D';
         }
         $banners_restore = json_encode($value3);
+        }elseif (Auth::user()-> hasRole ( 'AdminSetor')) {
+          $banners_restore=json_encode($value2);
+        }
        //dd($banners_restore);
        // dd($departamento_noticias_lista_restore);   
         return view('painel.banners.publicar.editar',compact('bannersdousuario','banners_restore','tree','bannerEditar')); 

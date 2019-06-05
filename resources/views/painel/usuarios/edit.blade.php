@@ -50,7 +50,7 @@
                 {!! Form::label('email', 'E-Mail', array('class' => 'control-label' )) !!}
                 <div class="form-group">
                   <div class="col-sm-12">
-                    {!! Form::text('email', $usuario->email, ['placeholder' => 'Cadastre seu e-mail','class' => 'form-control','required']) !!}
+                    {!! Form::email('email', $usuario->email, ['placeholder' => 'Cadastre seu e-mail','class' => 'form-control','required']) !!}
                   </div>
                 </div>
 
@@ -58,7 +58,7 @@
              {!! Form::label('password', 'Senha', array('class' => 'control-label' )) !!}
                 <div class="form-group">
                   <div class="col-sm-12">
-                    {!! Form::password('password', ['placeholder' => 'Cadastre sua senha','class' => 'form-control','required']) !!}
+                    {!! Form::password('password', ['placeholder' => 'Cadastre sua senha','class' => 'form-control']) !!}
                   </div>
                 </div>
 

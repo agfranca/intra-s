@@ -60,11 +60,23 @@ class Noticia extends Model
 		return $noticias;
    }
 
+   public static function noticias_ultimas()
+   {
+    $ultimas_noticias = Noticia::noticias_painel()->unique('id')->take(4);
+    //dd($ultimas_noticias);
+   }
+
+   public static function noticias_ultimas_count()
+   {
+    $ultimas_count = Noticia::noticias_painel();
+    //dd($ultimas_count->unique('id')->count());
+    return $ultimas_count->unique('id')->count();
+   }
 
    public static function noticias_painel()
    {
    	 //testa se o usuario logado é Administrador
-      $admin =  Auth::user()-> hasRole ( 'Admin' );
+      $admin =  Auth::user()-> hasRole ( 'Admin|AdminSetor' );
 
      //retorna o id do departamento do usuario logado
       $departamentos_id = Auth::user()->departamento_id;
@@ -74,7 +86,7 @@ class Noticia extends Model
 
     //Retorna o departamento do usuário logado
       $departamento = Departamento::where('id',$departamentos_id)->get()->first();
-
+      //dd($departamento->id);
     //Retorna as Noticias do departamento do Usuario Logado
       $todasnoticias= $departamento->noticias;
 
@@ -85,8 +97,22 @@ class Noticia extends Model
 
          if($admin == 'true') {
 
+            if (Auth::user()-> hasRole ( 'Admin' )) {
             $todosdepartamentos = Departamento::departamento_painel();
             //dd($todosdepartamentos);
+            }
+
+            if (Auth::user()-> hasRole ( 'AdminSetor' )) {
+            //$todosdepartamentos = Departamento::departamento_painel();
+            //$todosdepartamentos = collect($todosdepartamentos);  
+            //dd(Departamento::listardepartamentoefilhosview($departamento));
+            //dd($departamento->id);
+            $todosdepartamentos = Departamento::listardepartamentoefilhosview($departamento);
+            //dd($todosdepartamentos);
+            
+            //$todosdepartamentos = collect($todosdepartamentos);
+            }
+                        
             static $todasnoticias=[];
             $todasnoticias = collect($todasnoticias);
 
@@ -107,6 +133,8 @@ class Noticia extends Model
               $todasnoticias->push($noticiasdodepartamento);
               //$todasnoticias->merge($noticiasdodepartamento);
 
+              //dd($todasnoticias);
+
               //*****Comentei dia 13/09/2018 mudando para conseguir pegar quem redestribuiu
 
               /*if (!is_null($noticiasdodepartamento)) {
@@ -126,7 +154,7 @@ class Noticia extends Model
             }
     
 
-
+            //dd($todasnoticias);
 
           foreach ($todasnoticias as $noticia) {
           foreach ($noticia as $listar) {
@@ -151,6 +179,8 @@ class Noticia extends Model
             //Falta verificar -----  
 
              $noticiasdousuario = Departamento_Noticia::noticiasdousuario($user_id); 
+             $noticiasdousuario=$noticiasdousuario->unique("noticia_id");
+             //dd($noticiasdousuario);
              return $noticiasdousuario;
              /* $noticiasdodepartamento = Departamento_Noticia::noticiasdodepartamento($departamento->id);
               return $noticiasdodepartamento;*/ 
@@ -158,11 +188,18 @@ class Noticia extends Model
          }
          
         //dd($listarnoticias);
-         return $listarnoticias;
+        //dd($listarnoticias->unique('redistribuir_noticias_id'));
+         return $listarnoticias->unique('redistribuir_noticias_id');
          
    }
 
-
+      public static function noticias_painel_count()
+       {
+        $noticias=Noticia::noticias_painel();
+        //dd($noticias);
+        //dd($noticias->count('id'));
+        return $noticias->count('id');
+       }
 
 
 
@@ -226,7 +263,6 @@ public function noticias_usuario_logado()
 
              //Retorna as Noticias do departamento do Usuario Logado
             $noticias= $departamento->noticias;
-
              
             return view('painel.noticias.departamento', compact('noticias'));
         }

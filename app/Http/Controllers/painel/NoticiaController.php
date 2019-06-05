@@ -41,8 +41,10 @@ class NoticiaController extends Controller
     public function index()
     {
          
-            if(Auth::user()-> hasRole ( 'Admin|User')){
+            if(Auth::user()-> hasRole ( 'Admin|User|AdminSetor')){
             $noticiasdousuario = Noticia::noticias_painel();
+                        
+            //dd($noticiasdousuario);
             //$noticiasdousuario = collect($todasnoticias);
             return view('painel.noticias.index', compact('noticiasdousuario'));
             }
@@ -73,14 +75,15 @@ class NoticiaController extends Controller
         //falta Validar Noticias e Departamentos
      
     //testa se o usuario logado é Administrador
-      $admin =  Auth::user()-> hasRole ( 'Admin' );
+      $admin =  Auth::user()-> hasRole ( 'Admin|AdminSetor' );
     if ($admin) {
     
 
         //Salvar Noticia
         $departamento = $request->resultado2;
+        //dd($departamento);
         $pos = strpos($departamento,"D");
-        if($pos ===false){
+        if((Auth::user()-> hasRole ( 'Admin' ))AND($pos ===false)){
            $request->flash();
             return redirect()
                    ->back()
@@ -92,6 +95,7 @@ class NoticiaController extends Controller
            //Cria e Salva a Noticia
              $noticia = new Noticia;
              $noticia->noticia=$request->get('noticia');
+             $noticia->titulo=$request->get('titulo');
              $noticia->publicado='N';
              $noticia->user_id=Auth::user()->id;
              $noticia->save();
@@ -106,6 +110,10 @@ class NoticiaController extends Controller
                 if (!is_numeric($departamentofiltrado)) {
                     $departamentotrim = trim($departamentofiltrado,"D");
                     $departamentosfilhos->push($departamentotrim);
+                }
+
+                if(Auth::user()-> hasRole ( 'AdminSetor' )){
+                $departamentosfilhos->push($departamentofiltrado);
                 }
             }
             
@@ -142,6 +150,7 @@ class NoticiaController extends Controller
            //Cria e Salva a Noticia
              $noticia = new Noticia;
              $noticia->noticia=$request->get('noticia');
+             $noticia->titulo=$request->get('titulo');
              $noticia->publicado='N';
              $noticia->user_id=Auth::user()->id;
              $noticia->save();
@@ -191,13 +200,17 @@ class NoticiaController extends Controller
 
         $departamento_noticias_lista_restore = Departamento_Noticia::where('noticia_id',$noticia->id)->get();
         //dd($noticia->id);
-        
+        //dd($departamento_noticias_lista_restore);
         $value = $departamento_noticias_lista_restore->implode('departamento_id',',');
         $value2 = explode(",", $value);
+        //dd($value2);
+        if(Auth::user()-> hasRole ( 'Admin' )){
         foreach ($value2 as $id => $item) {
             $value3[$id]= $item.'D';
         }
-
+        }else{
+            $value3=$value2;
+        }
        //dd($value3);
        // dd($departamento_noticias_lista_restore);   
 
@@ -223,7 +236,7 @@ class NoticiaController extends Controller
              $noticia->save();
 
 
-    $admin =  Auth::user()-> hasRole ( 'Admin' );
+    $admin =  Auth::user()-> hasRole ( 'Admin|AdminSetor' );
     if ($admin) {    
 
         //Pegando a Lista de departamento Antiga enviada para edição
@@ -234,11 +247,16 @@ class NoticiaController extends Controller
         $departamento = $request->resultado2;
         //transformando em um Array
         $departamento2 = explode(",", $departamento);
+        //dd($departamento2);
         //Removendo as Empresas, deixando somente os departamentos
         foreach ($departamento2 as $id => $departamento3) {
             if (!is_numeric($departamento3)) {
                 $departamento_atual[$id] =$departamento3;
             }
+        }
+
+        if (Auth::user()-> hasRole ( 'AdminSetor' )) {
+            $departamento_atual=$departamento2;
         }
         //dd($departamento_anterior);
         //dd($departamento_atual);
@@ -262,7 +280,13 @@ class NoticiaController extends Controller
             foreach ($departamento_remover as $departamento) {
                // dd($departamento);
                 $noticia_id = $noticia->id;
+                if (Auth::user()-> hasRole ( 'Admin' )) {
                 $departamento_id = substr($departamento,0,-1);
+                }
+
+                if (Auth::user()-> hasRole ( 'AdminSetor' )) {
+                $departamento_id = $departamento;
+                }
                 //dd( $departamento_id);
 
                 $remover = Departamento_Noticia::where('departamento_id',$departamento_id)
@@ -281,7 +305,14 @@ class NoticiaController extends Controller
             foreach ($departamento_adicionar as $departamento) {
                // dd($departamento);
                 $noticia_id = $noticia->id;
+                if (Auth::user()-> hasRole ( 'Admin' )) {
                 $departamento_id = substr($departamento,0,-1);
+                }
+
+                if (Auth::user()-> hasRole ( 'AdminSetor' )) {
+                $departamento_id = $departamento;
+                }
+                
                 //dd( $departamento_id);
                 $departamento_noticia = new Departamento_Noticia;
 
@@ -348,7 +379,7 @@ class NoticiaController extends Controller
         $redistribuidos = DB::table ("redistribuir__noticias")
             -> select ("redistribuir__noticias.id","redistribuir__noticias.user_id")
             -> unionAll ($noticias)
-        -> get ();
+        -> get();
 
         return $redistribuidos;
     }

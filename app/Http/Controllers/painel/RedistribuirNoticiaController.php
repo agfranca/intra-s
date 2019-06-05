@@ -70,9 +70,16 @@ class RedistribuirNoticiaController extends Controller
         
         $value = $departamento_noticias_lista_restore->implode('departamento_id',',');
         $value2 = explode(",", $value);
+
+        if(Auth::user()-> hasRole ( 'Admin' )){
         foreach ($value2 as $id => $item) {
             $value3[$id]= $item.'D';
         }
+        }else{
+            $value3=$value2;
+        }
+
+
 
        //dd($value3);
        // dd($departamento_noticias_lista_restore);   
@@ -95,7 +102,7 @@ class RedistribuirNoticiaController extends Controller
               //Atualizando dados da Redistribuir Noticia
              //Cria e Salva Redistribuir Noticia
              $redistribuir = new Redistribuir_Noticia;
-             $redistribuir->nota = $request->get('titulo');
+             $redistribuir->nota = $request->get('comentario');
              $redistribuir->user_id = Auth::user()->id;
              $redistribuir->noticia_id = $noticia->id;
              $redistribuir->save();
@@ -115,6 +122,12 @@ class RedistribuirNoticiaController extends Controller
                 $departamento_atual[$id] =$departamento3;
             }
         }
+        
+        if (Auth::user()-> hasRole ( 'AdminSetor' )) {
+            $departamento_atual=$departamento2;
+        }
+
+
         //dd($departamento_anterior);
         //dd($departamento_atual);
        // $departamento_remover = $departamento_anterior->diff($departamento_atual);
@@ -137,8 +150,13 @@ class RedistribuirNoticiaController extends Controller
             foreach ($departamento_remover as $departamento) {
                // dd($departamento);
                 $noticia_id = $noticia->id;
+                if (Auth::user()-> hasRole ( 'Admin' )) {
                 $departamento_id = substr($departamento,0,-1);
-                //dd( $departamento_id);
+                }
+
+                if (Auth::user()-> hasRole ( 'AdminSetor' )) {
+                $departamento_id = $departamento;
+                }
 
                 $remover = Departamento_Noticia::where('departamento_id',$departamento_id)
                                                 ->where('noticia_id',$noticia_id)
@@ -156,7 +174,13 @@ class RedistribuirNoticiaController extends Controller
             foreach ($departamento_adicionar as $departamento) {
                // dd($departamento);
                 $noticia_id = $noticia->id;
+                if (Auth::user()-> hasRole ( 'Admin' )) {
                 $departamento_id = substr($departamento,0,-1);
+                }
+
+                if (Auth::user()-> hasRole ( 'AdminSetor' )) {
+                $departamento_id = $departamento;
+                }
                 //dd( $departamento_id);
                 $departamento_noticia = new Departamento_Noticia;
 

@@ -50,7 +50,7 @@
                 {!! Form::label('email', 'E-Mail', array('class' => 'control-label' )) !!}
                 <div class="form-group">
                   <div class="col-sm-12">
-                    {!! Form::text('email', '', ['placeholder' => 'Cadastre seu e-mail','class' => 'form-control','required']) !!}
+                    {!! Form::email('email', '', ['placeholder' => 'Cadastre seu e-mail','class' => 'form-control','required']) !!}
                   </div>
                 </div>
 

@@ -18,7 +18,21 @@ public function arquivo()
     //return $this->hasMany('App\Arquivo');
    }
 
+public static function ultimosbanners(){
+$ultimosbanners = Banner::banners_painel()->unique('id')->take(4);
+//->latest()
+//$contar = $ultimosbanners->take(1);
+//if($contar>1){
+  //dd("FOidá");
+//}
 
+
+foreach ($ultimosbanners as $value) {
+  # code...
+}
+//$ultimosbanners->limit(4)->get();
+return $ultimosbanners;   
+}
 
  public static function banners_painel()
  {
@@ -119,6 +133,15 @@ public static function bannersite()
     return $urls;
 
   }
+
+
+  public static function baners_painel_count()
+    {
+      $banners=Banner::banners_painel();
+      //dd($banners);
+      return $banners->unique('id')->count('id');
+    }
+
 
 
 }

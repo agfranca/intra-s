@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Departamento;
 use App\Empresa;
+use App\User;
 
 class DepartamentoController extends Controller
 {
@@ -33,7 +34,8 @@ class DepartamentoController extends Controller
     public function create()
     {
         //$tree = User::users_painel_tree();
-        $tree = Empresa::empresas_painel_tree();
+        $tree = User::users_painel_tree();
+        //$tree = Empresa::empresas_painel_tree();
         return view('painel.departamentos.create', compact('tree'));
     }
 
@@ -50,7 +52,7 @@ class DepartamentoController extends Controller
        //Gravação de dados
         $departamento = $request->resultado2;
 
-       // dd($departamento);
+        //dd($departamento);
         
         if(is_null($departamento)){
            $request->flash();
@@ -60,10 +62,26 @@ class DepartamentoController extends Controller
 
             //echo 'Selecione um departamento';
         }else{
+            $DepartamentoPai = NULL;
+            $EmpresaId = NULL;
 
-         $Departamento = new Departamento;
+            $pos = strpos($departamento,"D");
+            if($pos ===false){
+            $EmpresaId = $request->get('resultado2');
+            }else{
+            $Departamentotrim = trim($departamento,"D");
+            $DepartamentoPai = $Departamentotrim;
+            $Departamento = Departamento::where('id',$DepartamentoPai)->first();
+            //dd($Departamento->empresa_id);
+            $EmpresaId = $Departamento->empresa_id;
+            }
+
+            //dd($EmpresaId);
+            
+            $Departamento = new Departamento;
             $Departamento->nome = $request->get('nome');
-            $Departamento->empresa_id = $request->get('resultado2');
+            $Departamento->departamento_pai = $DepartamentoPai;
+            $Departamento->empresa_id = $EmpresaId;
             $Departamento->save();
             return redirect()
                    ->route('painel.departamentos.index')   
@@ -92,7 +110,8 @@ class DepartamentoController extends Controller
     public function edit(Departamento $departamento)
     {
         //dd($empresa);
-        $tree = Empresa::empresas_painel_tree();
+        //$tree = Empresa::empresas_painel_tree();
+        $tree = User::users_painel_tree();
         return view('painel.departamentos.edit',compact('departamento','tree'));
     }
 
@@ -111,9 +130,38 @@ class DepartamentoController extends Controller
         //Gravação de dados
        // $departamento = $request->resultado2;
 
-       // dd($departamento);
+        //dd($request->get('nome'));
+           
+
+            //****************  07/05/2019 ************************
+            //Gravação de dados
+            $departamentoSelecionado = $request->get('resultado2');
+            $DepartamentoPai = NULL;
+            $EmpresaId = NULL;
+
+            //dd($departamentoSelecionado);
+
+            $pos = strpos($departamentoSelecionado,"D");
+            if($pos ===false){
+            $EmpresaId = $departamentoSelecionado;
+            }else{
+            $Departamentotrim = trim($departamentoSelecionado,"D");
+            $DepartamentoPai = $Departamentotrim;
+            $Departamento = Departamento::where('id',$DepartamentoPai)->first();
+            //dd($Departamento->empresa_id);
+            $EmpresaId = $Departamento->empresa_id;
+            }
+
+
+            //dd($Departamento);
+
+            //dd($departamento->nome);
+            //dd($EmpresaId);
+            //dd($DepartamentoPai);
+            //***** 07/05/2019 ********
             $departamento->nome = $request->get('nome');
-            $departamento->empresa_id = $request->get('resultado2');
+            $departamento->empresa_id = $EmpresaId;
+            $departamento->departamento_pai = $DepartamentoPai;
             $departamento->save();
             return redirect()
                    ->route('painel.departamentos.index')   

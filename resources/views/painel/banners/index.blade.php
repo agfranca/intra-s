@@ -206,7 +206,7 @@
 
 
                       @if($banner -> publicado =='N')
-                          @role('Admin')
+                          @role('Admin|AdminSetor')
                           <button class="btn btn-xs btn-success" data-toggle="modal" data-target="#ModalPublicar" title="Publicar"> Publicar </button>
 
 <!-- Modal Publicar -->
@@ -263,7 +263,7 @@
 
                          
                       @else
-                        @role('Admin')
+                        @role('Admin|AdminSetor')
                         <form method="POST" action="/painel/banners/publicar/editar/{{$banner->id}}" style="display: inline">
                           {{csrf_field()}}  
                           <button class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Editar Publicação"> Editar Publicação </button>

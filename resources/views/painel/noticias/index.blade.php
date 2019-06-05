@@ -63,6 +63,8 @@
                     Comentário: {!!$noticia->redistribuir_noticia->nota!!}<br>
                     @endif
                     Publicado por: {!!$noticia->usuario->name!!}
+                    <br>
+                    <h4>{!! $noticia->noticia->titulo!!}</h4>
                     {!! $noticia->noticia->noticia!!}
               
                   </td>
@@ -82,7 +84,7 @@
                       </form>
                   @endif
  
-                    @role('Admin')
+                    @role('Admin|AdminSetor')
                       <form method="GET" action="{{route('painel.redistribuir.edit', $noticia->noticia_id)}}" style="display: inline">
                       <button class="btn btn-xs btn-primary" data-toggle="tooltip" data-placement="top" title="Redistribuir"> <i class="fa fa-refresh"></i> </button>
                       </form>

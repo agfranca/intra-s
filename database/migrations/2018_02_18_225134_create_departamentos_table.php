@@ -17,6 +17,7 @@ class CreateDepartamentosTable extends Migration
             $table->increments('id');
             $table->string('nome');
             $table->integer('empresa_id')->unsigned();
+            $table->integer('departamento_pai')->unsigned()->nullable();
             $table->timestamps();
         });
     }

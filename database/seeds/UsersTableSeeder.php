@@ -18,6 +18,7 @@ class UsersTableSeeder extends Seeder
 
         $AdminRole = Role::create(['name'=>'Admin']);
         $UserRole = Role::create(['name'=>'User']);
+        $AdminSetorRole = Role::create(['name'=>'AdminSetor']);
 
         $Admin = new User;
         $Admin->name = 'Alexandre';

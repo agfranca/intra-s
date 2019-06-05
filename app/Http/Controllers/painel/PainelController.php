@@ -4,7 +4,10 @@ namespace App\Http\Controllers\painel;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+//use App\Http\Controllers\painel\TarefasController;
+use App\Noticia;
+use App\Tarefa;
+use App\Banner;
 class PainelController extends Controller
 {
      /**
@@ -25,7 +28,15 @@ class PainelController extends Controller
     public function index()
     {
         //return view('home');
-        return view('painel.index');
+        $noticiastotal=Noticia::noticias_painel_count();
+        $tarefastotal=Tarefa::tarefascount();
+        $bannerstotal=Banner::baners_painel_count();
+        
+        //var_dump($noticiastotal);
+        //echo ($noticiastotal);
+        //dd($noticiastotal);
+
+        return view('painel.index', compact('noticiastotal','tarefastotal','bannerstotal'));
     }
 
     public function perfil()
@@ -33,4 +44,5 @@ class PainelController extends Controller
         //return view('home');
         return view('painel\perfil');
     }
+
 }

@@ -147,7 +147,8 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
-
+        Yoeunes\Notify\NotifyServiceProvider::class,
+        
         /*
          * Package Service Providers...
          */

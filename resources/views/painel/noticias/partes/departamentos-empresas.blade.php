@@ -7,7 +7,7 @@
 
 <div class="col-md-4">
   <div class="box box-info">
-    @role('Admin')
+    @role('Admin|AdminSetor')
       <div class="box-body">
     
       <p style="text-align: left;" class="control-label text-left"> <b>Departamentos</b> </p> 
@@ -20,10 +20,12 @@
     </div>       
       </div>
     @endrole
+
       <div class="box-footer">
         {!! Form::submit('Cadastrar Notícia', ['class' => 'btn btn-primary']); !!}
       </div>
   </div>
+  
 </div>
 
 

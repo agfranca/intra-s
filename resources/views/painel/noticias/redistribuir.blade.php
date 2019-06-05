@@ -40,8 +40,14 @@
 <div class="col-md-8">
   <div class="box box-info">
               <div class="box-body">
-                
                 {!! Form::label('comentario', 'Comentário', array('class' => 'control-label' )) !!}
+                <div class="form-group">
+                  <div class="col-sm-12">
+                    {!! Form::text('comentario','', ['placeholder' => 'Cadastre um Comentário para Matéria','class' => 'form-control', 'required']) !!}
+                  </div>
+                </div>
+
+                {!! Form::label('titulo', 'Título', array('class' => 'control-label' )) !!}
                 <div class="form-group">
                   <div class="col-sm-12">
                     {!! Form::text('titulo', $noticia->titulo, ['placeholder' => 'Cadastre o Tttulo da Matéria','class' => 'form-control', 'required']) !!}

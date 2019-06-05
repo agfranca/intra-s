@@ -34,6 +34,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Google Font -->
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+
 </head>
 <!--
 BODY TAG OPTIONS:
@@ -77,6 +79,7 @@ desired effect
       <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
         <span class="sr-only">Toggle navigation</span>
       </a>
+
       <!-- Navbar Right Menu -->
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
@@ -139,43 +142,128 @@ desired effect
               <li class="footer"><a href="#">View all</a></li>
             </ul>
           </li>
+
           <!-- Tasks Menu -->
           <li class="dropdown tasks-menu">
             <!-- Menu Toggle Button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-flag-o"></i>
-              <span class="label label-danger">9</span>
+              <span class="label label-success">{{\App\Tarefa::tarefascount()}} </span>
+              
             </a>
             <ul class="dropdown-menu">
-              <li class="header">You have 9 tasks</li>
+              <li class="header">Você tem {{\App\Tarefa::tarefascount()}} Tarefas <span style="color:white">{{\Carbon\Carbon::setLocale('pt_BR')}}</span></li>
               <li>
                 <!-- Inner menu: contains the tasks -->
                 <ul class="menu">
                   <li><!-- Task item -->
-                    <a href="#">
-                      <!-- Task title and progress text -->
-                      <h3>
-                        Design some buttons
-                        <small class="pull-right">20%</small>
-                      </h3>
-                      <!-- The progress bar -->
-                      <div class="progress xs">
-                        <!-- Change the css width attribute to simulate progress -->
-                        <div class="progress-bar progress-bar-aqua" style="width: 20%" role="progressbar"
-                             aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                          <span class="sr-only">20% Complete</span>
-                        </div>
-                      </div>
-                    </a>
+                      @foreach (\App\Http\Controllers\painel\TarefasController::ultimastarefasrecebidas() as $tarefa)
+                        <a href="{{ route('painel.tarefas.recebidasTodas') }}">
+                        <p>{{\Illuminate\Support\Str::limit($tarefa->nome, 22)}}
+                        <small class="pull-right"><i class="fa fa-clock-o"></i> {{$tarefa->created_at->diffForHumans()}}</small></p>
+                        </a>
+                      @endforeach
                   </li>
-                  <!-- end task item -->
+                 <!-- end task item -->
                 </ul>
               </li>
               <li class="footer">
-                <a href="#">View all tasks</a>
+                <a href="{{ route('painel.tarefas.recebidasTodas') }}">Ver todas Tarefas</a>
               </li>
             </ul>
           </li>
+
+
+
+          <!-- Banners Menu -->
+          <li class="dropdown tasks-menu">
+            <!-- Menu Toggle Button -->
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-picture-o"></i>
+              <span class="label label-warning">{{\App\Banner::baners_painel_count()}} </span>
+              
+            </a>
+            <ul class="dropdown-menu">
+              <li class="header">Você tem {{\App\Banner::baners_painel_count()}} Banners <span style="color:white">{{\Carbon\Carbon::setLocale('pt_BR')}}</span></li>
+              <li>
+                <!-- Inner menu: contains the tasks -->
+                <ul class="menu">
+                  <li><!-- Task item -->
+                      @foreach (\App\Banner::ultimosbanners() as $banner)
+                        <a href="{{ route('painel.banners.index') }}">
+                        
+                        @php
+                        $bannerimagem = DB::table('arquivos')
+                        ->where('id','=', $banner->arquivo_id)
+                        ->select('url')
+                        ->first();
+
+                        @endphp
+
+
+                        <img src="{!!$bannerimagem->url!!}" class="img-responsive" alt="User Image">
+
+                        <p>{{\Illuminate\Support\Str::limit($banner->titulo, 22)}}
+                        <small class="pull-right"><i class="fa fa-clock-o"></i> {{$banner->created_at->diffForHumans()}}</small></p>
+                        </a>
+                      @endforeach
+                  </li>
+                 <!-- end task item -->
+                </ul>
+              </li>
+              <li class="footer">
+                <a href="{{ route('painel.banners.index') }}">Ver Todos Banners</a>
+              </li>
+            </ul>
+          </li>
+          <!-- Final Banners Menu -->
+
+
+
+          <!-- Noticias Menu -->
+          <li class="dropdown tasks-menu">
+            <!-- Menu Toggle Button -->
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-newspaper-o"></i>
+              <span class="label label-info">{{\App\Banner::baners_painel_count()}} </span>
+              
+            </a>
+            <ul class="dropdown-menu">
+              <li class="header">Você tem {{\App\Banner::baners_painel_count()}} Banners <span style="color:white">{{\Carbon\Carbon::setLocale('pt_BR')}}</span></li>
+              <li>
+                <!-- Inner menu: contains the tasks -->
+                <ul class="menu">
+                  <li><!-- Task item -->
+                      @foreach (\App\Banner::ultimosbanners() as $banner)
+                        <a href="{{ route('painel.banners.index') }}">
+                        
+                        @php
+                        $bannerimagem = DB::table('arquivos')
+                        ->where('id','=', $banner->arquivo_id)
+                        ->select('url')
+                        ->first();
+
+                        @endphp
+
+
+                        <img src="{!!$bannerimagem->url!!}" class="img-responsive" alt="User Image">
+
+                        <p>{{\Illuminate\Support\Str::limit($banner->titulo, 22)}}
+                        <small class="pull-right"><i class="fa fa-clock-o"></i> {{$banner->created_at->diffForHumans()}}</small></p>
+                        </a>
+                      @endforeach
+                  </li>
+                 <!-- end task item -->
+                </ul>
+              </li>
+              <li class="footer">
+                <a href="{{ route('painel.banners.index') }}">Ver Todos Banners</a>
+              </li>
+            </ul>
+          </li>
+          <!-- Final Noticias Menu -->
+
+
           <!-- User Account Menu -->
           <li class="dropdown user user-menu">
             <!-- Menu Toggle Button -->
@@ -396,6 +484,7 @@ desired effect
 <!-- AdminLTE App -->
 <script src="/adminlte/dist/js/adminlte.min.js"></script>
 
+
 <!-- page script -->
 <script>
   $(function () {
@@ -438,6 +527,7 @@ desired effect
 }
 
 </script>
+
 
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.

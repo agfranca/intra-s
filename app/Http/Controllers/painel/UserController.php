@@ -16,6 +16,17 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    
+    private $departamentoModel;
+
+    public function __construct(Departamento $departamento)
+    {
+        $this->departamentoModel = $departamento;
+    }
+
+
+
+
     public function index()
     {
         
@@ -109,6 +120,15 @@ class UserController extends Controller
     }
 
 
+    public function habilitaradmsetor(User $usuario)
+    {
+        //dd($usuario);
+        $habilitaradm = User::habilitaradmsetor($usuario);
+        return back();
+     
+    }
+
+
     public function desabilitaradm(User $usuario)
     {
         $desabilitaradm = User::desabilitaradm($usuario);
@@ -154,7 +174,9 @@ class UserController extends Controller
             //$user = new User;
             $usuario->name = $request->get('nome');
             $usuario->email = $request->get('email');
-            $usuario->password = bcrypt($request->get('password'));
+            if (!is_null($request->get('password'))) {
+            $usuario->password = bcrypt($request->get('password'));    
+            }
             $usuario->departamento_id = $departamentotrim;
             $usuario->save();
 
@@ -184,5 +206,18 @@ class UserController extends Controller
                ->route('painel.usuarios.index')   
                ->with('sucess','Usuário apagado com Sucesso!');
         
+    }
+
+    public function getUsuarios($idDepartamento)
+    {
+        $vazio = [];
+        if ($idDepartamento==0) {
+            return response()->json($vazio);
+        }
+        //dd("ALEXANDRE");
+        $departamento = $this->departamentoModel->find($idDepartamento);
+        $usuarios = $departamento->user()->getQuery()->get(['id', 'name']);
+        //return response::json($usuarios);
+        return response()->json($usuarios);
     }
 }

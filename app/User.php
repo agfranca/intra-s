@@ -1,6 +1,8 @@
 <?php
 
 namespace App;
+use App\Departamento;
+use App\Tarefa;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
@@ -35,9 +37,14 @@ class User extends Authenticatable
         //dd($usuario);
         $usuario -> assignRole ('Admin');
         $usuario->syncRoles('Admin');
-
     }
 
+    public static function habilitaradmsetor($usuario)
+    {
+        //dd($usuario);
+        $usuario -> assignRole ('AdminSetor');
+        $usuario->syncRoles('AdminSetor');
+    }
 
     public static function desabilitaradm($usuario)
     {
@@ -47,17 +54,20 @@ class User extends Authenticatable
 
     }
 
-
     public function noticia()
     {
       return $this->hasMany('App\Noticia');
+    }
+
+     public function tarefasUsuario()
+    {
+        return $this->hasMany('App\Tarefa', 'iddestino');
     }
 
     public function departamento_noticias()
     {
       return $this->hasMany('App\Noticia');
     }
-
 
     public function noticias()
     {
@@ -82,7 +92,6 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Arquivo');
     }
-
 
 
     public static function users_painel()
@@ -133,12 +142,23 @@ class User extends Authenticatable
 
     public static function users_painel_tree()
     {
-
-            //retorna o id do departamento do usuario logado
+        //retorna o id do departamento do usuario logado
         $departamentos_id = Auth::user()->departamento_id;
 
-            //Retorna o departamento do usuário logado
+        //Retorna o departamento do usuário logado
         $departamento_usuario = DB::table('departamentos')->where('id',$departamentos_id)->first();
+
+
+        if (Auth::user()-> hasRole ( 'AdminSetor' )) {
+            
+        //dd('Cheguei aqui!!!!');
+
+        $teste=Departamento::listardepartamentoefilhos($departamento_usuario);
+
+       //dd($teste);
+        return $teste;
+
+        }
         
             //Retorna o id da empresa do usuario logado
         $empresa_id = $departamento_usuario->empresa_id;  
@@ -148,8 +168,7 @@ class User extends Authenticatable
 
        //dd($teste);
         return $teste;
-
-
-
     }
+
 }
+    

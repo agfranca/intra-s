@@ -192,8 +192,9 @@ public static function listarempresasdepartamentos($empresas)
         $departamentos = $empresas->departamentos;
         //dd($departamentos);
         foreach ($departamentos as $departamento ) {
+            //dd($departamento->departamento_pai);
             $myObj->id = "{$departamento->id}"."D" ; 
-            $myObj->parent = "$departamento->empresa_id" ; 
+            $myObj->parent = (is_null($departamento->departamento_pai)) ? "{$departamento->empresa_id}" : "{$departamento->departamento_pai}"."D" ; 
             $myObj->text = "{$departamento->nome}" ;
             $myObj->state ='{"selected": false}'; 
             $myJSON.= json_encode ($myObj).",";

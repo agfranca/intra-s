@@ -17,7 +17,7 @@ $noticias_restore = json_encode($value3);
 
 <div class="col-md-4">
   <div class="box box-info">
-    @role('Admin')
+    @role('Admin|AdminSetor')
       <div class="box-body">
       <p style="text-align: left;" class="control-label text-left"> <b>Departamentos</b> </p> 
        <input type="hidden" value="{{$noticias_restore}}" name="resultado1" id="resultado1" required="">
