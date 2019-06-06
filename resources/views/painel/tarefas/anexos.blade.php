@@ -126,10 +126,7 @@ function goBack() {
             location.reload(true);
 
         });
-
-        
-        
-    
+   
 </script>
 
 
