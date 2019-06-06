@@ -599,7 +599,8 @@ class TarefasController extends Controller
 
 
             $extra = "'_token':'{{csrf_token()}}'";
-            $iPreviewConfig .= "{type:'$tipo', url:'$urlDelete', downloadUrl:'$url', width: \"120px\", key:$key,},"; } 
+            $iPreviewConfig .= "{type:'$tipo', url:'$urlDelete', downloadUrl:'$url', width: \"120px\", key:$key,},"; 
+        } 
 
         //dd($idTarefa);
         //dd($urls);

@@ -97,7 +97,7 @@ function goBack() {
                     _token: $("input[name='_token']").val()
                 };
             },
-            allowedFileExtensions: ['jpg', 'png', 'gif','doc','pdf'],
+            allowedFileExtensions: ['jpg', 'png', 'gif','doc','docx','xls','xlsx','ppt','pptx','pdf'],
             initialPreviewFileType: 'image',
             overwriteInitial: true,
             uploadAsync: true,
