@@ -604,8 +604,8 @@ class TarefasController extends Controller
         //dd($idTarefa);
         //dd($urls);
         //dd($iPreview);    
-        dd($iPreviewConfig);    
-        return view('painel.tarefas.anexos',compact('idTarefa','urls','iPreview','iPreviewConfig'));
+        //dd($iPreviewConfig);    
+        return view('painel.tarefas.anexos',compact('idTarefa','iPreview','iPreviewConfig'));
 
     }
 
