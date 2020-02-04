@@ -26,10 +26,13 @@ class NotificarController extends Controller
         //
      if(Auth::user()-> hasRole ( 'Admin|AdminSetor' )){
         $departamentos = Departamento::departamento_painel();
+        dd($departamentos);
         $notificacoes = Project::projetos();
         //dd($notificacoes);
         return view('painel.notificacao.index', compact('departamentos','notificacoes'));
 
+        }else{
+            return view('painel.index');
         }
     }
 
