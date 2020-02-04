@@ -27,13 +27,46 @@
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
+<style type="text/css">
+ #MainBG {
+    fill: url(#RadialGradientFill1);
+    stroke: rgb(112, 112, 112);
+    stroke-width: 1px;
+    stroke-linejoin: miter;
+    stroke-linecap: butt;
+    stroke-miterlimit: 4;
+    shape-rendering: auto;
+  }
+  .MainBG {
+    position: absolute;
+    overflow: visible;
+    width: 1920px;
+    height: 1080px;
+    left: 0px;
+    top: 0px;
+    z-index:-10;
+  } 
+
+}
+
+</style>
 <body class="hold-transition login-page">
+
+ <svg class="MainBG">
+    <radialGradient spreadMethod="pad" id="RadialGradientFill1">
+      <stop offset="0" stop-color="#296eb5" stop-opacity="1"></stop>
+      <stop offset="1" stop-color="#004b8d" stop-opacity="1"></stop>
+    </radialGradient>
+    <rect id="MainBG" rx="0" ry="0" x="0" y="0" width="1920" height="1080">
+    </rect>
+  </svg>
+ 
+
+
 <div class="login-box">
-  <div style="margin-bottom: 10px;" class="login-logo">
-    <img src="\adminlte\images\intra-s.png" class="img-responsive" alt="Logo Sistema">
-  </div>
   <!-- /.login-logo -->
-  <div class="login-box-body">
+  <div style="border-radius: 10px 10px 10px 10px;" class="login-box-body">
+     <img src="\adminlte\images\intra-s.png" class="img-responsive" alt="Logo Sistema">
     <p class="login-box-msg">Faça login para iniciar sua sessão</p>
 
     <form  method="post" action="{{ route('login') }}">
@@ -95,6 +128,12 @@
   <!-- /.login-box-body -->
 </div>
 <!-- /.login-box -->
+
+
+
+
+
+
 
 <!-- jQuery 3 -->
 <script src="/adminlte/bower_components/jquery/dist/jquery.min.js"></script>

@@ -76,17 +76,17 @@
 				}); } );
   </script>
 
-            <table id="table_id" class="display">
+            <table style="font-size: 10pt" id="table_id" class="display compact">
             <thead>
             <tr>
             <th>Informação</th>
-            <th>Anexos</th>  
-            <th>Nome</th>
-            <th>Responsável</th>
-            <th>Prioridade</th>
-            <th>Status</th>
+            <th style='width: 5%;'>Anexo</th>  
+            <th style='width: 35%;'>Nome</th>
+            <th style='width: 10%;'>Responsável</th>
+            <th style='width: 5%;'>Prioridade</th>
+            <th style='width: 15%;'>Status</th>
             <th>Data Atualização</th>
-            <th>Ações</th>
+            <th style='width: 30%;'>Ações</th>
             </tr>
             </thead>
             <tbody>
@@ -167,9 +167,34 @@
 
                           <li><a href="/update-status/{{ $entrada->id}}/Para Aprovação">Para Aprovação</a></li>
 
+                          <li><a href="/update-status/{{ $entrada->id}}/Devolvida">Devolver</a></li>
+
+
                           @if ($entrada->idcriadopor == $idUsuario)
                           <li><a href="/update-status/{{ $entrada->id}}/Concluído">Concluído</a></li>
+
+                          <li><a href="/painel/tarefas/delete/{{ $entrada->id}}"><span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Excluir Tarefa"></span>Excluir</a></li>
+
+
+                          @if (strstr(url()->current(), 'recebidas'))
+
+                            <li><a href="/painel/tarefas/edit/{{ $entrada->id}}/recebidas"><span class="glyphicon glyphicon-pencil" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Editar Tarefa"></span>Editar</a></li>
+
+                            @elseif (strstr(url()->current(), 'enviadas'))
+                      
+                            <li><a href="/painel/tarefas/edit/{{ $entrada->id}}/enviadas"><span class="glyphicon glyphicon-pencil" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Editar Tarefa"></span>Editar</a></li>
+                          
                           @endif
+
+                          @else
+
+                          <li> <a href="/painel/tarefas/encaminhar/{{ $entrada->id}}"><span class="glyphicon glyphicon-transfer" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Encaminhar Tarefa"></span>Encaminhar Tarefa</a></li>
+
+
+                          @endif
+
+                          <li><a href="/painel/tarefas/historico/{{ $entrada->id}}"><span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Histórico da Tarefa"></span>Histórico da Tarefa</a></li>
+
                       </ul>
 
 
@@ -192,7 +217,7 @@
 
                       <a class="btn btn-default btn-sm" href="/painel/tarefas/comentarios/{{ $entrada->id}}"><span class="glyphicon glyphicon-comment" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Comentários"><b style="padding-left: 2px;">{{$comentarioscount}}</b></span></a>
 
-
+{{-- MOVI ~Estes botões para o DROPDOWN Acima
                       @if ($entrada->idcriadopor == $idUsuario)
 
                           @if (strstr(url()->current(), 'recebidas'))
@@ -212,10 +237,10 @@
 
                       @endif
 
-                      
+                       
                     <a class="btn btn-default btn-sm" href="/painel/tarefas/historico/{{ $entrada->id}}"><span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Histórico da Tarefa"></span></a>                      
                     </div>
-                    
+                --}}    
 
 
 {{-- 

@@ -12,6 +12,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Noticia;
+use App\Arquivo;
 use App\User;
 use App\Departamento;
 use App\Empresa;
@@ -22,6 +23,7 @@ use Spatie\Permission\Models\Permission;
 
 class Noticia extends Model
 {
+  
   public function departamentos()
    {
    	 return $this->belongsToMany('App\Departamento','departamento__noticias');
@@ -35,15 +37,9 @@ class Noticia extends Model
   //
    public static function noticias()
    {
-   	 //retorna o departamento do usuario logado
-        $departamentos_id = Auth::user()->departamento_id;
-        //Retorna as Noticias do Usuario logado        
-        $noticias = DB::table('noticias')
-                            ->join('departamento__noticias','noticias.id','=','departamento__noticias.noticia_id')
-                            ->select('noticias.*','departamento__noticias.departamento_id')
-                            ->where('departamento__noticias.departamento_id','=',$departamentos_id)
-                            ->get();
-        return $noticias;
+
+    $noticias= Auth::user()->departamento->noticias->sortByDesc('created_at');
+    return $noticias;
    }
 
    public static function noticias_site()
@@ -87,8 +83,11 @@ class Noticia extends Model
     //Retorna o departamento do usuário logado
       $departamento = Departamento::where('id',$departamentos_id)->get()->first();
       //dd($departamento->id);
+    
     //Retorna as Noticias do departamento do Usuario Logado
-      $todasnoticias= $departamento->noticias;
+      //$todasnoticias= $departamento->noticias;
+      $todasnoticias = Noticia::noticias();
+      //dd(Noticia::noticias());
 
       static $listarnoticias=[];
       $listarnoticias = collect($listarnoticias);             
@@ -99,6 +98,7 @@ class Noticia extends Model
 
             if (Auth::user()-> hasRole ( 'Admin' )) {
             $todosdepartamentos = Departamento::departamento_painel();
+
             //dd($todosdepartamentos);
             }
 
@@ -186,10 +186,11 @@ class Noticia extends Model
               return $noticiasdodepartamento;*/ 
 
          }
-         
+        
+        return $listarnoticias; 
         //dd($listarnoticias);
         //dd($listarnoticias->unique('redistribuir_noticias_id'));
-         return $listarnoticias->unique('redistribuir_noticias_id');
+        // return $listarnoticias->unique('redistribuir_noticias_id');
          
    }
 
@@ -266,6 +267,17 @@ public function noticias_usuario_logado()
              
             return view('painel.noticias.departamento', compact('noticias'));
         }
+
+public function arquivo()
+    {
+        return $this->belongsTo('App\Arquivo');
+    }
+
+public function getUrlImagem()
+    {
+        //dd(Arquivo::where('id',$this->arquivo_id)->get());
+        return Arquivo::where('id',$this->arquivo_id)->first();
+    }
 
 
 public function testes()

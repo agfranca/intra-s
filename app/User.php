@@ -59,6 +59,11 @@ class User extends Authenticatable
       return $this->hasMany('App\Noticia');
     }
 
+    public function project()
+    {
+      return $this->hasMany('App\Project');
+    }
+
      public function tarefasUsuario()
     {
         return $this->hasMany('App\Tarefa', 'iddestino');
@@ -96,9 +101,22 @@ class User extends Authenticatable
 
     public static function users_painel()
     {
+        $todosdepartamentos = Departamento::departamento_painel();
+        $todosusuarios2 = collect([]);
+        foreach ($todosdepartamentos as $departamento) {
+        $todosusuarios2 = $todosusuarios2->merge($departamento->user);
+        }
+        
+        return $todosusuarios2;
+        //dd($todosusuarios2);
+        //dd($todosusuarios);
+
+//----------------------------- 13/12/2019 REduzi tudo para as linhas acima a baixo apagarei em breve
+
+        //dd($todosdepartamentos);
 
         //retorna o departamento do usuario logado
-        $departamento_id = Auth::user()->departamento_id;
+/*        $departamento_id = Auth::user()->departamento_id;
         //dd($departamento_id);
         $empresa_id = Departamento::where('id',$departamento_id)->get()->first(); 
         //dd($empresa_id);
@@ -138,6 +156,7 @@ class User extends Authenticatable
             }
         }
             return $todosusuarios;
+*/
     }
 
     public static function users_painel_tree()

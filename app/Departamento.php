@@ -5,6 +5,7 @@ use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use App\Empresa;
+use App\Projecttype;
 
 class Departamento extends Model
 {
@@ -30,7 +31,19 @@ public function empresa()
         return $this->hasMany('App\User');
     }
 
+    public function links()
+    {
+     
+     return $this->hasMany('App\DepartamentoLink');
+    }
+
+     public function projecttypes()
+    {
+     
+     return $this->hasMany('App\Projecttype');
+    }
     
+
     public static function departamentos()
     {
        
@@ -62,7 +75,9 @@ public function empresa()
         //retorna os departamentos da empresa
         $departamentos = $empresa->departamentos;
         //dd($departamentos);
-        $filhos = Empresa::empresasfilhos($empresa->id);
+        //$filhos = Empresa::empresasfilhos($empresa->id);
+        $filhos = Empresa::empresasfilhostodos($empresa);
+        
         //dd($filhos);
 
         static $departamentosfilhos=[];
@@ -86,7 +101,7 @@ public function empresa()
     }
 
 
-    public static function listardepartamentoefilhos($departamento)
+    public static function  listardepartamentoefilhos($departamento)
     {
         static $count;
         $json_str = '{"id":"", "parent":"", "text": ""}';
@@ -145,5 +160,44 @@ public function empresa()
        }
 
     }
+
+
+    //********* Não está Pronto 30/08/2019 ***********
+    public static function departamentosDaEmpresa($empresa_id)
+    {
+      $departamentosDaEmpresas = Departamento::where('empresa_id',$empresa_id)->get();
+      //dd('Alexandre');
+      return $departamentosDaEmpresas;
+    } 
+    public static function departamentosLista()
+    {
+      if(Auth::user()-> hasRole ( 'Admin' )){
+       $todasempresas = Empresa::EmpresasLista();
+       static $departamentos;
+       $departamentos = collect($departamentos);
+        foreach ($todasempresas as $empresa) {
+        $departamentosDaEmpresa = Departamento::departamentosDaEmpresa($empresa->id);
+          foreach ($departamentosDaEmpresa as $departamentoDaEmpresa) {
+          $departamentos -> push($departamentoDaEmpresa);
+          }
+        }
+        //dd($departamentos);
+        return $departamentos;
+        }
+
+      if(Auth::user()-> hasRole ( 'AdminSetor' )){
+        $departamento = Departamento::where('id',Auth::user()->departamento_id)->first();
+        $departamentosFilhos = Departamento::listardepartamentoefilhosview($departamento);
+        dd($departamentosFilhos);
+        //listardepartamentoefilhosview($departamento)
+        return $todasempresas;
+        }
+      if(Auth::user()-> hasRole ( 'User' )){
+        $departamento = Departamento::where('id',Auth::user()->departamento_id)->first();
+        dd($departamento);
+        return $departamento;
+        }
+    }
+
 
 }

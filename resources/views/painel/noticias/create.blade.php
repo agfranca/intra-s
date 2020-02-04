@@ -12,7 +12,7 @@
         <li><a href={{ route('painel.noticias.index') }}><i class="fa fa-newspaper-o"></i> Notícia</a></li>
         <li class="active">Cadastrar Notícias</li>
       </ol>
-    </section>
+</section>
 @stop
 
 @section('content')
@@ -35,8 +35,45 @@
 
 @endif
 
+{{-- Scripts e CSS --}}
+ 
+<script src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
+<link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
+ 
+{{-- Scripts e CSS --}}
+
+{{-- 
 
 {!! Form::open(['route' => 'painel.noticias.store','method' => 'POST','class'=>'form-horizontal']) !!}
+
+ {!! Form::open(['action' => 'painel\NoticiaController@store','method' => 'POST','class'=>'form-horizontal dropzone','enctype'=>"multipart/form-data"]) !!}
+ 
+ --}}
+
+
+{{-- 
+<form action="{{route('painel.noticias.store')}}" method="post" enctype="multipart/form-data">
+    <input type="file" name="image">
+    ...
+ --}}
+{{-- </form>
+
+<form action="{{route('painel.noticias.store')}}" class="dropzone" id="dropzoneFrom" >
+            </form>
+ --}}
+         {{-- 
+            <div align="center">
+                <button type="button" class="btn btn-info" id="submit-all"> Upload</button>
+            </div>
+
+class="dropzone" id="my-dropzone"
+
+ --}}
+
+<form method="post" action="{{route('painel.noticias.store')}}"
+                  enctype="multipart/form-data" >
+                {{ csrf_field() }}
+
 <div class="col-md-8">
   <div class="box box-info">
               <div class="box-body">
@@ -63,8 +100,8 @@
 </div>
 
 <!-- INcluir o JStree aqui -->
+@include('painel.noticias.partes.departamentos-empresas-imagem-destaque')
 @include('painel.noticias.partes.departamentos-empresas')
-
 {!! Form::close() !!}
 
 

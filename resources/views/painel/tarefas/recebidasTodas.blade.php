@@ -19,6 +19,7 @@
     <div class="box-body">
       @include('painel.tarefas.partes.resumo')
       @include('painel.tarefas.partes.lista')
+      
     </div>
     {{-- MODAL Adicionar Tarefas --}}
     @include('painel.tarefas.partes.modalAdicionarTarefa')

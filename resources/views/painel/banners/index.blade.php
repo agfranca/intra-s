@@ -175,7 +175,13 @@
                       <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#myModal"><i class="fa fa-pencil"></i> </button>
 
                       <!-- Modal EDITAR TITULO-->
-                      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+
+                      <style type="text/css">
+                        .modal-backdrop {
+                           z-index: -1;
+                        }
+                      </style>
+                      <div style="margin-top: 30px;" class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                         <div class="modal-dialog" role="document">
                           <div class="modal-content">
                             <div class="modal-header">
@@ -200,7 +206,9 @@
                         </div>
                               {!! Form::close() !!}
                         </div>
-                      </div>
+                      </div
+
+
                       <!-- FIM Modal EDITAR TITULO-->
 
 

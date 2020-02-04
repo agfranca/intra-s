@@ -2,7 +2,6 @@
 <html>
 
 <head>
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{config ('app.name', 'Intra-S')}}| Site</title>
@@ -10,7 +9,7 @@
 
 </head>
 
-<body class="">
+<body>
 <style type="text/css">
   html {
   font-size: 1rem;
@@ -23,13 +22,12 @@ h1,h2,h3,h4,h5,h6{
 }
 </style>
 
-  
-  <section class="menu">
-    @include('site.partes.menu')
-  </section>
+<section class="menu">
+    @include('site.partes.menu2')
+</section>
 
 <section class="linha1">
-  <div style="margin-top:80px" class="container-fluid py-2">
+  <div class="container-fluid">
     <div class="row">
       <div class="col-md-2">
           @yield('L1C1')
@@ -63,7 +61,9 @@ h1,h2,h3,h4,h5,h6{
     </div>
   </div>
 </section>
+<div id="Rodapé" style="margin-bottom: 50px;">
 
+</div>
 @include('site.partes.scripts')
 </body>
 

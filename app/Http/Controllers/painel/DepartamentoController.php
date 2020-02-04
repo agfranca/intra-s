@@ -187,4 +187,6 @@ class DepartamentoController extends Controller
                ->with('sucess','Departamentos apagado com Sucesso!');
         
     }
+
+
 }

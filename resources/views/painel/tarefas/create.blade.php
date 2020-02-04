@@ -68,7 +68,7 @@ $(document).ready(function(){
                   <div class="form-group">
                     <label class="control-label">Data de Entrega:</label>
 
-                    <input placeholder="Digite a data de Entrega" type="date" name="entrega" class="form-control form">
+                    <input placeholder="Digite a data de Entrega" type="datetime-local" name="entrega" class="form-control form">
                   </div>
 
                 </div>

@@ -36,7 +36,8 @@
 @endif
 
 
-{!! Form::open(['route' => ['painel.noticias.updade',$noticia],'method' => 'PUT','class'=>'form-horizontal']) !!}
+{!! Form::open(['route' => ['painel.noticias.updade',$noticia],'method' => 'PUT','class'=>'form-horizontal', 'enctype'=>'multipart/form-data']) !!}
+
 <div class="col-md-8">
   <div class="box box-info">
               <div class="box-body">
@@ -61,6 +62,7 @@
 </div>
 
 <!-- Incluir o JStree aqui -->
+@include('painel.noticias.partes.departamentos-empresas-imagem-destaque-editar')
 @include('painel.noticias.partes.departamentos-empresas-editar')
 
 {!! Form::close() !!}

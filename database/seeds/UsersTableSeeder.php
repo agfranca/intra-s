@@ -64,6 +64,26 @@ class UsersTableSeeder extends Seeder
         $Admin->arquivo_id = NULL;
 		$Usuario4->save();
         $Usuario4->assignRole($UserRole);
+
+
+        $Usuario5 = new User;
+        $Usuario5->name = 'Hilda';
+        $Usuario5->email = 'hilda@hotmail.com';
+        $Usuario5->password = bcrypt('123456');
+        $Usuario5->departamento_id = '5';
+        $Admin->arquivo_id = NULL;
+        $Usuario5->save();
+        $Usuario5->assignRole($AdminRole);
+
+        $Usuario6 = new User;
+        $Usuario6->name = 'Hilda';
+        $Usuario6->email = 'hilda@hotmail.com';
+        $Usuario6->password = bcrypt('123456');
+        $Usuario6->departamento_id = '5';
+        $Admin->arquivo_id = NULL;
+        $Usuario6->save();
+        $Usuario6->assignRole($AdminRole);
+
     
     }
 }

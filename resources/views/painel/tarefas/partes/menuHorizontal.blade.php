@@ -1,3 +1,4 @@
+
   <div class="box-header" style="padding-bottom: 0px;">
 {{-- XXXXXX Variaveis XXXXXXXX--}}
 @php
@@ -17,6 +18,7 @@ $urlmes = "painel/tarefas/excluidas/filtro/".$primeiroDiaDoMes."/".$ultimoDiaDoM
 
 {{-- XXXXXX FIM DAS Variaveis XXXXXXXX--}}
     {{-- XXXXXX LISTA XXXXXXXX--}}
+
 
     <div  id="filtroLista" style=" {{request()->is('painel/tarefas/lista*')?'display:""':'display: none;'}}"> 
 
@@ -61,6 +63,7 @@ $urlmes = "painel/tarefas/excluidas/filtro/".$primeiroDiaDoMes."/".$ultimoDiaDoM
       <div class="btn-group btn-group-xs" id="tipovisualizacao" data-pg-name="tipovisualizacao"> 
             <button type="button" class="btn btn-default {{request()->is('painel/tarefas/lista*')?'active':''}}"><a href={{ route('painel.tarefas.recebidasTodas') }}>Lista</a></button>             
             <button type="button" class="btn btn-default {{request()->is('painel/tarefas/kanban*')?'active':''}}"><a href={{ route('painel.tarefas.kanban.recebidas.todas') }}>Kanban</a></button>
+            <button type="button" class="btn btn-default {{request()->is('/painel/tarefas/calendario*')?'active':''}}"><a href={{ route('painel.tarefas.calendario') }}>Calendário</a></button>
             
       </div>
 
@@ -88,9 +91,6 @@ $urlmes = "painel/tarefas/excluidas/filtro/".$primeiroDiaDoMes."/".$ultimoDiaDoM
 
     </div>
     {{-- XXXXXX FIM DA LISTA XXXXXXXX--}}
-
-
-
 
 
 
@@ -138,6 +138,7 @@ $urlmes = "painel/tarefas/excluidas/filtro/".$primeiroDiaDoMes."/".$ultimoDiaDoM
       <div class="btn-group btn-group-xs" id="tipovisualizacao" data-pg-name="tipovisualizacao"> 
             <button type="button" class="btn btn-default {{request()->is('painel/tarefas/lista*')?'active':''}}"><a href={{ route('painel.tarefas.recebidasTodas') }}>Lista</a></button>             
             <button type="button" class="btn btn-default {{request()->is('painel/tarefas/kanban*')?'active':''}}"><a href={{ route('painel.tarefas.kanban.recebidas.todas') }}>Kanban</a></button>
+            <button type="button" class="btn btn-default {{request()->is('/painel/tarefas/calendario*')?'active':''}}"><a href={{ route('painel.tarefas.calendario') }}>Calendário</a></button>
             
       </div>
 
@@ -254,7 +255,6 @@ $urlmes = "painel/tarefas/excluidas/filtro/".$primeiroDiaDoMes."/".$ultimoDiaDoM
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-
 <!-- Page script -->
 <script>
 
@@ -346,3 +346,27 @@ $urlmes = "painel/tarefas/excluidas/filtro/".$primeiroDiaDoMes."/".$ultimoDiaDoM
 
 
 </script>
+
+
+
+
+    {{-- XXXXXXX CALENDÁRIO XXXXXXX--}}
+
+    <div  id="filtroCaledario" style=" {{request()->is('painel/tarefas/calendario*')?'display:""':'display: none;'}}"> 
+
+    <div class="text-left col-md-8">
+      
+      <div class="btn-group btn-group-xs" id="tipovisualizacao" data-pg-name="tipovisualizacao"> 
+            <button type="button" class="btn btn-default {{request()->is('painel/tarefas/lista*')?'active':''}}"><a href={{ route('painel.tarefas.recebidasTodas') }}>Lista</a></button>             
+            <button type="button" class="btn btn-default {{request()->is('painel/tarefas/kanban*')?'active':''}}"><a href={{ route('painel.tarefas.kanban.recebidas.todas') }}>Kanban</a></button>
+            <button type="button" class="btn btn-default {{request()->is('/painel/tarefas/calendario*')?'active':''}}"><a href={{ route('painel.tarefas.calendario') }}>Calendário</a></button>
+            
+      </div>
+  </div>
+</div>
+
+
+
+
+
+

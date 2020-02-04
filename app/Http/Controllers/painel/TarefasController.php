@@ -30,7 +30,6 @@ class TarefasController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-
     public static function ultimastarefasrecebidas()
     {
         $hoje = Carbon::today();
@@ -47,27 +46,20 @@ class TarefasController extends Controller
     }
 
 
-
-    public function recebidasTodas()
+        public function recebidasTodasDepartamento()
     {
         $hoje = Carbon::today();
         //Variavel com ID do Usuário
         $idUsuario = Auth::user()->id;
-
-
+        $UsuarioDepartamento = Auth::user()->departamento->id;
+        
         //Dados
-        $tarefas = Tarefa::where('iddestino', '=', $idUsuario)
-        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
-        ->select('tarefas.*', 'users.name')
-        ->get();
+        $tarefas = Tarefa::where('departamento_id', '=', $UsuarioDepartamento)
+                    ->where('iddestino', '=', Null)
+                    ->where('status','<>','Com Aprovador')
+                    ->where('status','<>','Devolvida')
+                    ->get();
 
-        //Dados
-       /* $tarefas = DB::table('tarefas')
-        ->where('iddestino', '=', $idUsuario)
-        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
-        ->select('tarefas.*', 'users.name')
-        ->get();
-        */
 
         //Resumo
         $aFazer=$tarefas->where('status', 'A Fazer')->count();
@@ -75,6 +67,235 @@ class TarefasController extends Controller
         $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->count();
         $concluido=$tarefas->where('status', 'Concluído')->count();
         $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
+
+        //Dados para Modal Adicionar e retorno para View com as variaveis
+        if(Auth::user()-> hasRole ( 'User')){
+            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
+            
+            return view('painel.tarefas.recebidasTodasDepartamento', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
+           
+        }elseif(Auth::user()-> hasRole ( 'Admin|AdminSetor')){
+            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
+            $departamentos->prepend('Escolha um Departamento', '0');
+            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id'); 
+        
+            return view('painel.tarefas.recebidasTodasDepartamento', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
+        }
+
+    }
+
+
+
+    public function recebidasHojeDepartamento()
+    {
+        //Variavel com ID do Usuário
+        $hoje = Carbon::today();
+        $hoje2 = Carbon::today()->addDay();
+        //Uso da Função Filtro
+        $retorno = $this::recebidasfiltroDepartamento($hoje, $hoje2);
+        return $retorno;
+    }
+
+
+        public function recebidasEstaSemanaDepartamento()
+    {
+        //Variaveis
+        $primeiroDiaDaSemana = Carbon::now()->startOfWeek();
+        $ultimoDiaDaSemana = Carbon::now()->endOfWeek();
+        //Uso da Função Filtro
+        $retorno = $this::recebidasfiltroDepartamento($primeiroDiaDaSemana, $ultimoDiaDaSemana);
+        return $retorno;
+    }
+
+
+        public function recebidasEsteMesDepartamento()
+    {
+        //Variaveis
+        $primeiroDiaDoMes = Carbon::now()->firstOfMonth();
+        $ultimoDiaDoMes = Carbon::now()->lastOfMonth();
+        //Uso da Função Filtro
+        $retorno = $this::recebidasfiltroDepartamento($primeiroDiaDoMes, $ultimoDiaDoMes);
+        return $retorno;
+    }
+
+
+    public function recebidasfiltroDepartamento($inicio, $fim)
+    {
+
+        //Variavel com ID do Usuário
+        $idUsuario = Auth::user()->id;
+        $hoje = Carbon::today();
+        $UsuarioDepartamento = Auth::user()->departamento->id;
+        
+        //Dados
+        $tarefas = Tarefa::where('departamento_id', '=', $UsuarioDepartamento)
+        ->where('iddestino', '=', Null)
+        ->where('status','<>','Com Aprovador')
+        ->where('status','<>','Devolvida')
+        ->whereBetween('tarefas.created_at', [$inicio, $fim])
+        ->get();
+
+
+        //Resumo
+        $aFazer=$tarefas->where('status', 'A Fazer')->count();
+        $emAndamento=$tarefas->where('status', 'Em Andamento')->count();
+        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->count();
+        $concluido=$tarefas->where('status', 'Concluído')->count();
+        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
+        
+        //Dados para Modal Adicionar e retorno para View com as variaveis
+        if(Auth::user()-> hasRole ( 'User')){
+            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
+            
+            return view('painel.tarefas.recebidasTodasDepartamento', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','inicio','fim'));
+           
+        }elseif(Auth::user()-> hasRole ( 'Admin|AdminSetor')){
+            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
+            $departamentos->prepend('Escolha um Departamento', '0');
+            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
+        
+            return view('painel.tarefas.recebidasTodasDepartamento', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','inicio','fim'));
+        }
+    }    
+
+
+
+
+    public function enviadasTodasDepartamento()
+    {
+        $hoje = Carbon::today();
+        //Variavel com ID do Usuário
+        $idUsuario = Auth::user()->id;
+        $UsuarioDepartamento = Auth::user()->departamento->id;
+        
+        //Dados
+        $tarefas = Tarefa::where('departamento_id', '=', $UsuarioDepartamento)
+        ->where('status','<>','Com Aprovador')
+        ->where('status','<>','Devolvida')
+        ->where('iddestino', '<>', Null)
+        ->get();
+
+        
+        //Resumo
+        $aFazer=$tarefas->where('status', 'A Fazer')->count();
+        $emAndamento=$tarefas->where('status', 'Em Andamento')->count();
+        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->count();
+        $concluido=$tarefas->where('status', 'Concluído')->count();
+        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
+        //Dados para Modal Adicionar e retorno para View com as variaveis
+        if(Auth::user()-> hasRole ( 'User')){
+            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
+            
+            return view('painel.tarefas.recebidasTodasDepartamento', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
+           
+        }elseif(Auth::user()-> hasRole ( 'Admin|AdminSetor')){
+            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
+            $departamentos->prepend('Escolha um Departamento', '0');
+            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
+        
+            return view('painel.tarefas.recebidasTodasDepartamento', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
+        }
+
+    }
+
+    public function enviadasHojeDepartamento()
+    {
+
+        //Variaveis
+        $hoje = Carbon::today();
+        $hoje2 = Carbon::today()->addDay();
+
+        //Uso da Função Filtro
+        $retorno = $this::enviadasfiltroDepartamento($hoje, $hoje2);
+        return $retorno;
+    }
+
+        public function enviadasEstaSemanaDepartamento()
+    {
+        //Variaveis
+        $primeiroDiaDaSemana = Carbon::now()->startOfWeek();
+        $ultimoDiaDaSemana = Carbon::now()->endOfWeek();
+
+        //Uso da Função Filtro
+        $retorno = $this::enviadasfiltroDepartamento($primeiroDiaDaSemana, $ultimoDiaDaSemana);
+        return $retorno;
+    }
+
+
+        public function enviadasEsteMesDepartamento()
+    {
+        //Variaveis
+        $primeiroDiaDoMes = Carbon::now()->firstOfMonth();
+        $ultimoDiaDoMes = Carbon::now()->lastOfMonth();
+
+        //Uso da Função Filtro
+        $retorno = $this::enviadasfiltroDepartamento($primeiroDiaDoMes, $ultimoDiaDoMes);
+        return $retorno;
+    }
+
+
+    public function enviadasfiltroDepartamento($inicio, $fim)
+    {
+
+        //Variavel com ID do Usuário
+        $idUsuario = Auth::user()->id;
+        $hoje = Carbon::today();
+        $UsuarioDepartamento = Auth::user()->departamento->id;
+
+
+        
+        //Dados
+        $tarefas = Tarefa::where('departamento_id', '=', $UsuarioDepartamento)
+        ->where('iddestino', '<>', Null)
+        ->where('status','<>','Com Aprovador')
+        ->where('status','<>','Devolvida')
+        ->whereBetween('tarefas.created_at', [$inicio, $fim])
+        ->get();
+
+        //Resumo
+        $aFazer=$tarefas->where('status', 'A Fazer')->count();
+        $emAndamento=$tarefas->where('status', 'Em Andamento')->count();
+        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->count();
+        $concluido=$tarefas->where('status', 'Concluído')->count();
+        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
+        
+        //Dados para Modal Adicionar e retorno para View com as variaveis
+        if(Auth::user()-> hasRole ( 'User')){
+            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
+            
+            return view('painel.tarefas.recebidasTodasDepartamento', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','inicio','fim'));
+           
+        }elseif(Auth::user()-> hasRole ('Admin|AdminSetor')){
+            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
+            $departamentos->prepend('Escolha um Departamento', '0');
+            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
+        
+            return view('painel.tarefas.recebidasTodasDepartamento', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','inicio','fim'));
+        }
+        
+    }  
+
+
+    public function recebidasTodas()
+    {
+
+        $hoje = Carbon::today();
+        //Variavel com ID do Usuário
+        $idUsuario = Auth::user()->id;
+
+        //Dados
+        $tarefas = Tarefa::where('iddestino', '=', $idUsuario)
+        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
+        ->select('tarefas.*', 'users.name')
+        ->get();
+
+        //Resumo
+        $aFazer=$tarefas->where('status', 'A Fazer')->count();
+        $emAndamento=$tarefas->where('status', 'Em Andamento')->count();
+        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->count();
+        $concluido=$tarefas->where('status', 'Concluído')->count();
+        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
+
         //Dados para Modal Adicionar e retorno para View com as variaveis
         if(Auth::user()-> hasRole ( 'User')){
             $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
@@ -94,113 +315,36 @@ class TarefasController extends Controller
 
     public function recebidasHoje()
     {
-
         //Variavel com ID do Usuário
-        $idUsuario = Auth::user()->id;
         $hoje = Carbon::today();
         $hoje2 = Carbon::today()->addDay();
-        //dd($hoje);
-        
-        //Dados
-        $tarefas = Tarefa::where('iddestino', '=', $idUsuario)
-        ->whereBetween('tarefas.created_at', [$hoje, $hoje2])
-        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
-        ->select('tarefas.*', 'users.name')
-        ->get();
-        //Resumo
-        $aFazer=$tarefas->where('status', 'A Fazer')->count();
-        $emAndamento=$tarefas->where('status', 'Em Andamento')->count();
-        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->count();
-        $concluido=$tarefas->where('status', 'Concluído')->count();
-        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
-        //Dados para Modal Adicionar e retorno para View com as variaveis
-        if(Auth::user()-> hasRole ( 'User')){
-            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
-            
-            return view('painel.tarefas.recebidasTodas', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
-           
-        }elseif(Auth::user()-> hasRole ( 'Admin|AdminSetor')){
-            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
-            $departamentos->prepend('Escolha um Departamento', '0');
-            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
-        
-            return view('painel.tarefas.recebidasTodas', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
-        }
-
+        //Uso da Função Filtro
+        $retorno = $this::recebidasfiltro($hoje, $hoje2);
+        return $retorno;
     }
+
 
         public function recebidasEstaSemana()
     {
-        $hoje = Carbon::today();
-        //Variavel com ID do Usuário
-        $idUsuario = Auth::user()->id;
+        //Variaveis
         $primeiroDiaDaSemana = Carbon::now()->startOfWeek();
         $ultimoDiaDaSemana = Carbon::now()->endOfWeek();
-        //->subDay()
-        //Dados
-        $tarefas = Tarefa::where('iddestino', '=', $idUsuario)
-        ->whereBetween('tarefas.created_at', [$primeiroDiaDaSemana, $ultimoDiaDaSemana])
-        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
-        ->select('tarefas.*', 'users.name')
-        ->get();
-
-        //Resumo
-        $aFazer=$tarefas->where('status', 'A Fazer')->count();
-        $emAndamento=$tarefas->where('status', 'Em Andamento')->count();
-        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->count();
-        $concluido=$tarefas->where('status', 'Concluído')->count();
-        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
-        //Dados para Modal Adicionar e retorno para View com as variaveis
-        if(Auth::user()-> hasRole ( 'User')){
-            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
-            
-            return view('painel.tarefas.recebidasTodas', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
-           
-        }elseif(Auth::user()-> hasRole ( 'Admin|AdminSetor')){
-            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
-            $departamentos->prepend('Escolha um Departamento', '0');
-            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
-        
-            return view('painel.tarefas.recebidasTodas', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
-        }
-
+        //Uso da Função Filtro
+        $retorno = $this::recebidasfiltro($primeiroDiaDaSemana, $ultimoDiaDaSemana);
+        return $retorno;
     }
 
 
         public function recebidasEsteMes()
     {
-        //Variavel com ID do Usuário
-        $idUsuario = Auth::user()->id;
-        $hoje = Carbon::today();
+        //Variaveis
         $primeiroDiaDoMes = Carbon::now()->firstOfMonth();
         $ultimoDiaDoMes = Carbon::now()->lastOfMonth();
-        //Dados
-        $tarefas = Tarefa::where('iddestino', '=', $idUsuario)
-        ->whereBetween('tarefas.created_at', [$primeiroDiaDoMes, $ultimoDiaDoMes])
-        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
-        ->select('tarefas.*', 'users.name')
-        ->get();
-        //Resumo
-        $aFazer=$tarefas->where('status', 'A Fazer')->count();
-        $emAndamento=$tarefas->where('status', 'Em Andamento')->count();
-        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->count();
-        $concluido=$tarefas->where('status', 'Concluído')->count();
-        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
-        //Dados para Modal Adicionar e retorno para View com as variaveis
-        if(Auth::user()-> hasRole ( 'User')){
-            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
-            
-            return view('painel.tarefas.recebidasTodas', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
-           
-        }elseif(Auth::user()-> hasRole ( 'Admin|AdminSetor')){
-            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
-            $departamentos->prepend('Escolha um Departamento', '0');
-            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
-        
-            return view('painel.tarefas.recebidasTodas', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
-        }
-
+        //Uso da Função Filtro
+        $retorno = $this::recebidasfiltro($primeiroDiaDoMes, $ultimoDiaDoMes);
+        return $retorno;
     }
+
 
     public function recebidasfiltro($inicio, $fim)
     {
@@ -208,6 +352,7 @@ class TarefasController extends Controller
         //Variavel com ID do Usuário
         $idUsuario = Auth::user()->id;
         $hoje = Carbon::today();
+       
 
         //Dados
         $tarefas = Tarefa::where('iddestino', '=', $idUsuario)
@@ -237,10 +382,8 @@ class TarefasController extends Controller
         
             return view('painel.tarefas.recebidasTodas', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','inicio','fim'));
         }
-        
-            
-
     }    
+
 
     public function enviadasTodas()
     {
@@ -281,119 +424,36 @@ class TarefasController extends Controller
     public function enviadasHoje()
     {
 
-        //Variavel com ID do Usuário
-        $idUsuario = Auth::user()->id;
+        //Variaveis
         $hoje = Carbon::today();
         $hoje2 = Carbon::today()->addDay();
-        //dd($hoje);
-        
-        //Dados
-        $tarefas = Tarefa::where('idcriadopor', '=', $idUsuario)
-        ->where('iddestino', '<>', $idUsuario)
-        ->whereBetween('tarefas.created_at', [$hoje, $hoje2])
-        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
-        ->join('users as destino', 'tarefas.iddestino', '=', 'destino.id')
-        ->select('tarefas.*', 'users.name','destino.name as destino' )
-        ->get();
-        //Resumo
-        $aFazer=$tarefas->where('status', 'A Fazer')->count();
-        $emAndamento=$tarefas->where('status', 'Em Andamento')->count();
-        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->count();
-        $concluido=$tarefas->where('status', 'Concluído')->count();
-        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
-        //Dados para Modal Adicionar e retorno para View com as variaveis
-        if(Auth::user()-> hasRole ( 'User')){
-            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
-            
-            return view('painel.tarefas.recebidasTodas', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
-           
-        }elseif(Auth::user()-> hasRole ('Admin|AdminSetor')){
-            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
-            $departamentos->prepend('Escolha um Departamento', '0');
-            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
-        
-            return view('painel.tarefas.recebidasTodas', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
-        }
 
+        //Uso da Função Filtro
+        $retorno = $this::enviadasfiltro($hoje, $hoje2);
+        return $retorno;
     }
 
         public function enviadasEstaSemana()
     {
-        $hoje = Carbon::today();
-        //Variavel com ID do Usuário
-        $idUsuario = Auth::user()->id;
+        //Variaveis
         $primeiroDiaDaSemana = Carbon::now()->startOfWeek();
         $ultimoDiaDaSemana = Carbon::now()->endOfWeek();
-        //->subDay()
 
-        //Dados
-        $tarefas = Tarefa::where('idcriadopor', '=', $idUsuario)
-        ->where('iddestino', '<>', $idUsuario)
-        ->whereBetween('tarefas.created_at', [$primeiroDiaDaSemana, $ultimoDiaDaSemana])
-        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
-        ->join('users as destino', 'tarefas.iddestino', '=', 'destino.id')
-        ->select('tarefas.*', 'users.name','destino.name as destino' )
-        ->get();
-        //Resumo
-        $aFazer=$tarefas->where('status', 'A Fazer')->count();
-        $emAndamento=$tarefas->where('status', 'Em Andamento')->count();
-        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->count();
-        $concluido=$tarefas->where('status', 'Concluído')->count();
-        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
-        //Dados para Modal Adicionar e retorno para View com as variaveis
-        if(Auth::user()-> hasRole ( 'User')){
-            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
-            
-            return view('painel.tarefas.recebidasTodas', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
-           
-        }elseif(Auth::user()-> hasRole ('Admin|AdminSetor')){
-            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
-            $departamentos->prepend('Escolha um Departamento', '0');
-            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
-        
-            return view('painel.tarefas.recebidasTodas', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
-        }
-
+        //Uso da Função Filtro
+        $retorno = $this::enviadasfiltro($primeiroDiaDaSemana, $ultimoDiaDaSemana);
+        return $retorno;
     }
 
 
         public function enviadasEsteMes()
     {
-        $hoje = Carbon::today();
-        //Variavel com ID do Usuário
-        $idUsuario = Auth::user()->id;
-        $hoje = Carbon::today();
+        //Variaveis
         $primeiroDiaDoMes = Carbon::now()->firstOfMonth();
         $ultimoDiaDoMes = Carbon::now()->lastOfMonth();
-        
-        //Dados
-        $tarefas = Tarefa::where('idcriadopor', '=', $idUsuario)
-        ->where('iddestino', '<>', $idUsuario)
-        ->whereBetween('tarefas.created_at', [$primeiroDiaDoMes, $ultimoDiaDoMes])
-        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
-        ->join('users as destino', 'tarefas.iddestino', '=', 'destino.id')
-        ->select('tarefas.*', 'users.name','destino.name as destino' )
-        ->get();
-        //Resumo
-        $aFazer=$tarefas->where('status', 'A Fazer')->count();
-        $emAndamento=$tarefas->where('status', 'Em Andamento')->count();
-        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->count();
-        $concluido=$tarefas->where('status', 'Concluído')->count();
-        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
-        //Dados para Modal Adicionar e retorno para View com as variaveis
-        if(Auth::user()-> hasRole ( 'User')){
-            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
-            
-            return view('painel.tarefas.recebidasTodas', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
-           
-        }elseif(Auth::user()-> hasRole ('Admin|AdminSetor')){
-            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
-            $departamentos->prepend('Escolha um Departamento', '0');
-            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
-        
-            return view('painel.tarefas.recebidasTodas', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje'));
-        }
 
+        //Uso da Função Filtro
+        $retorno = $this::enviadasfiltro($primeiroDiaDoMes, $ultimoDiaDoMes);
+        return $retorno;
     }
 
 
@@ -434,8 +494,6 @@ class TarefasController extends Controller
             return view('painel.tarefas.recebidasTodas', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','inicio','fim'));
         }
         
-            
-
     }  
 
 
@@ -683,11 +741,22 @@ class TarefasController extends Controller
 
     }
 
+    public function uptadeStatusProjeto($idProjeto,$status)
+    {
+    $tarefas = Tarefa::where('project_id',$idProjeto)->get();
+     foreach ($tarefas as $tarefa) {
+        $retorno = $this::uptadeStatus($tarefa->id,$status);        
+     }
+     
+     return redirect('/painel/notificar/aprovadores');
+    }
 
     public function uptadeStatus($idTarefa,$status)
     {
        // dd($idTarefa);
+        //dd($status);
         switch ($status) {
+            //Resolvendo o envio pelo KANBAN onde b1 é board 1 no kanban, b2 board2 no kanban, b3 é board 3 no kanban
             case 'b1':
                 $status = 'A Fazer';
                 break;
@@ -700,10 +769,19 @@ class TarefasController extends Controller
             case 'b4':
                 $status = 'Concluído';
                 break;
+
         }
 
         Tarefa::where('id', $idTarefa)
             ->update(['status' => $status]);
+
+        
+        $Tarefa=Tarefa::where('id', $idTarefa)->first();
+        activity()
+        ->performedOn($Tarefa)
+        ->withProperties(['attributes'=>['status' => $status]])
+        ->log('updated');
+
 
         //Mensagem para os Usuários 
         notify()->success('Status Atualizado com Sucesso!','', ['timeOut' => '8000', 'progressBar'=> 'true']);
@@ -715,7 +793,7 @@ class TarefasController extends Controller
               // ->with('sucess','Status Atualizado com Sucesso!');
     }
 
-// xxxx KANBAN xxxxx
+// xxxx KANBAN  RECEBIDAS xxxxx
 
 public function kanbanRecebidasTodas()
     {
@@ -759,145 +837,39 @@ public function kanbanRecebidasTodas()
         $idUsuario = Auth::user()->id;
         $hoje = Carbon::today();
         $hoje2 = Carbon::today()->addDay();
-        //dd($hoje);
-        
-        //Dados
-        $tarefas = Tarefa::where('iddestino', '=', $idUsuario)
-        ->whereBetween('tarefas.created_at', [$hoje, $hoje2])
-        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
-        ->select('tarefas.*', 'users.name')
-        ->get();
 
-//Resumo
-        $aFazer=$tarefas->where('status', 'A Fazer')->all();
-        $emAndamento=$tarefas->where('status', 'Em Andamento')->all();
-        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->all();
-        $concluido=$tarefas->where('status', 'Concluído')->all();
-        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->all();
-
-        $aFazerCount=$tarefas->where('status', 'A Fazer')->count();
-        $emAndamentoCount=$tarefas->where('status', 'Em Andamento')->count();
-        $paraAprovacaoCount=$tarefas->where('status', 'Para Aprovação')->count();
-        $concluidoCount=$tarefas->where('status', 'Concluído')->count();
-        $vencidasCount=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
-        
-
-
-        //Dados para Modal Adicionar e retorno para View com as variaveis
-        if(Auth::user()-> hasRole ( 'User')){
-            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
-            
-            return view('painel.tarefas.kanbanRecebidas', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario'));
-           
-        }elseif(Auth::user()-> hasRole ('Admin|AdminSetor')){
-            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
-            $departamentos->prepend('Escolha um Departamento', '0');
-            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
-        
-            return view('painel.tarefas.kanbanRecebidas', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario'));
-        }
-
+        //Uso da Função Filtro
+        $retorno = $this::recebidasfiltrokanban($hoje, $hoje2);
+        return $retorno;
     }
 
 
 
         public function kanbanRecebidasEstaSemana()
     {
-        $hoje = Carbon::today();
-        //Variavel com ID do Usuário
-        $idUsuario = Auth::user()->id;
+        //Variavel
         $primeiroDiaDaSemana = Carbon::now()->startOfWeek();
         $ultimoDiaDaSemana = Carbon::now()->endOfWeek();
-        //->subDay()
 
-        //Dados
-        $tarefas = Tarefa::where('iddestino', '=', $idUsuario)
-        ->whereBetween('tarefas.created_at', [$primeiroDiaDaSemana, $ultimoDiaDaSemana])
-        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
-        ->select('tarefas.*', 'users.name')
-        ->get();
-
-
-        //Resumo
-        $aFazer=$tarefas->where('status', 'A Fazer')->all();
-        $emAndamento=$tarefas->where('status', 'Em Andamento')->all();
-        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->all();
-        $concluido=$tarefas->where('status', 'Concluído')->all();
-        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->all();
-
-        $aFazerCount=$tarefas->where('status', 'A Fazer')->count();
-        $emAndamentoCount=$tarefas->where('status', 'Em Andamento')->count();
-        $paraAprovacaoCount=$tarefas->where('status', 'Para Aprovação')->count();
-        $concluidoCount=$tarefas->where('status', 'Concluído')->count();
-        $vencidasCount=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
-
-        //Dados para Modal Adicionar e retorno para View com as variaveis
-        if(Auth::user()-> hasRole ( 'User')){
-            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
-            
-            return view('painel.tarefas.kanbanRecebidas', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario'));
-           
-        }elseif(Auth::user()-> hasRole ('Admin|AdminSetor')){
-            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
-            $departamentos->prepend('Escolha um Departamento', '0');
-            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
-        
-            return view('painel.tarefas.kanbanRecebidas', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario'));
-        }
+        //Uso da Função Filtro
+        $retorno = $this::recebidasfiltrokanban($primeiroDiaDaSemana, $ultimoDiaDaSemana);
+        return $retorno;
 
     }
 
 
         public function kanbanRecebidasEsteMes()
     {
-        $hoje = Carbon::today();
-        
         //Variavel com ID do Usuário
-        $idUsuario = Auth::user()->id;
-        $hoje = Carbon::today();
         $primeiroDiaDoMes = Carbon::now()->firstOfMonth();
         $ultimoDiaDoMes = Carbon::now()->lastOfMonth();
-        
-        //Dados
-        $tarefas = Tarefa::where('iddestino', '=', $idUsuario)
-        ->whereBetween('tarefas.created_at', [$primeiroDiaDoMes, $ultimoDiaDoMes])
-        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
-        ->select('tarefas.*', 'users.name')
-        ->get();
-
-        //Resumo
-        $aFazer=$tarefas->where('status', 'A Fazer')->all();
-        $emAndamento=$tarefas->where('status', 'Em Andamento')->all();
-        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->all();
-        $concluido=$tarefas->where('status', 'Concluído')->all();
-        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->all();
-
-        $aFazerCount=$tarefas->where('status', 'A Fazer')->count();
-        $emAndamentoCount=$tarefas->where('status', 'Em Andamento')->count();
-        $paraAprovacaoCount=$tarefas->where('status', 'Para Aprovação')->count();
-        $concluidoCount=$tarefas->where('status', 'Concluído')->count();
-        $vencidasCount=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
 
 
-        //Dados para Modal Adicionar e retorno para View com as variaveis
-        if(Auth::user()-> hasRole ( 'User')){
-            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
-            
-            return view('painel.tarefas.kanbanRecebidas', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario'));
-           
-        }elseif(Auth::user()-> hasRole ('Admin|AdminSetor')){
-            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
-            $departamentos->prepend('Escolha um Departamento', '0');
-            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
-        
-            return view('painel.tarefas.kanbanRecebidas', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario'));
-        }
+        //Uso da Função Filtro
+        $retorno = $this::recebidasfiltrokanban($primeiroDiaDoMes, $ultimoDiaDoMes);
+        return $retorno;
 
     }
-
-
-
-
 
     public function recebidasfiltrokanban($inicio, $fim)
     {
@@ -948,10 +920,137 @@ public function kanbanRecebidasTodas()
 
 
 
+// xxxx KANBAN RECEBIDAS DEPARTAMENTOxxxxx
+
+public function kanbanRecebidasTodasDepartamento()
+    {
+
+        $hoje = Carbon::today();
+        //Variavel com ID do Usuário
+        $idUsuario = Auth::user()->id;
+        $UsuarioDepartamento = Auth::user()->departamento->id;
+        //Dados
+        $tarefas = Tarefa::where('departamento_id', '=', $UsuarioDepartamento)
+                    ->where('iddestino', '=', Null)
+                    ->where('status','<>','Com Aprovador')
+                    ->where('status','<>','Devolvida')
+                    ->get();
+
+
+        //Resumo
+        $aFazer=$tarefas->where('status', 'A Fazer')->all();
+        $emAndamento=$tarefas->where('status', 'Em Andamento')->all();
+        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->all();
+        $concluido=$tarefas->where('status', 'Concluído')->all();
+        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->all();
+
+        $aFazerCount=$tarefas->where('status', 'A Fazer')->count();
+        $emAndamentoCount=$tarefas->where('status', 'Em Andamento')->count();
+        $paraAprovacaoCount=$tarefas->where('status', 'Para Aprovação')->count();
+        $concluidoCount=$tarefas->where('status', 'Concluído')->count();
+        $vencidasCount=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
+        
+
+        
+            return view('painel.tarefas.kanbanRecebidasDepartamento', compact('tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario','hoje'));
+           
+    }
 
 
 
 
+
+      public function kanbanRecebidasHojeDepartamento()
+    {
+
+        //Variavel com ID do Usuário
+        $idUsuario = Auth::user()->id;
+        $hoje = Carbon::today();
+        $hoje2 = Carbon::today()->addDay();
+
+        //Uso da Função Filtro
+        $retorno = $this::recebidasfiltrokanbanDepartamento($hoje, $hoje2);
+        return $retorno;
+    }
+
+
+
+        public function kanbanRecebidasEstaSemanaDepartamento()
+    {
+        //Variavel
+        $primeiroDiaDaSemana = Carbon::now()->startOfWeek();
+        $ultimoDiaDaSemana = Carbon::now()->endOfWeek();
+
+        //Uso da Função Filtro
+        $retorno = $this::recebidasfiltrokanbanDepartamento($primeiroDiaDaSemana, $ultimoDiaDaSemana);
+        return $retorno;
+
+    }
+
+
+        public function kanbanRecebidasEsteMesDepartamento()
+    {
+        //Variavel com ID do Usuário
+        $primeiroDiaDoMes = Carbon::now()->firstOfMonth();
+        $ultimoDiaDoMes = Carbon::now()->lastOfMonth();
+
+
+        //Uso da Função Filtro
+        $retorno = $this::recebidasfiltrokanbanDepartamento($primeiroDiaDoMes, $ultimoDiaDoMes);
+        return $retorno;
+
+    }
+
+    public function recebidasfiltrokanbanDepartamento($inicio, $fim)
+    {
+        //Variavel com ID do Usuário
+        $idUsuario = Auth::user()->id;
+        $hoje = Carbon::today();
+        $UsuarioDepartamento = Auth::user()->departamento->id;
+        
+        //Dados
+        $tarefas = Tarefa::where('departamento_id', '=', $UsuarioDepartamento)
+        ->where('iddestino', '=', Null)
+        ->where('status','<>','Com Aprovador')
+        ->where('status','<>','Devolvida')
+        ->whereBetween('tarefas.created_at', [$inicio, $fim])
+        ->get();
+
+        //Resumo
+        $aFazer=$tarefas->where('status', 'A Fazer')->all();
+        $emAndamento=$tarefas->where('status', 'Em Andamento')->all();
+        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->all();
+        $concluido=$tarefas->where('status', 'Concluído')->all();
+        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->all();
+
+        $aFazerCount=$tarefas->where('status', 'A Fazer')->count();
+        $emAndamentoCount=$tarefas->where('status', 'Em Andamento')->count();
+        $paraAprovacaoCount=$tarefas->where('status', 'Para Aprovação')->count();
+        $concluidoCount=$tarefas->where('status', 'Concluído')->count();
+        $vencidasCount=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
+        
+        //Dados para Modal Adicionar e retorno para View com as variaveis
+        if(Auth::user()-> hasRole ( 'User')){
+            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
+            
+            return view('painel.tarefas.kanbanRecebidas', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario','inicio','fim'));
+           
+        }elseif(Auth::user()-> hasRole ('Admin|AdminSetor')){
+            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
+            $departamentos->prepend('Escolha um Departamento', '0');
+            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
+        
+            return view('painel.tarefas.kanbanRecebidasDepartamento', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario','inicio','fim'));
+        }
+
+        
+    }  
+
+
+
+
+
+// xxxx KANBAN  ENVIADAS xxxxx
 
 public function kanbanEnviadasTodas()
     {
@@ -994,160 +1093,39 @@ public function kanbanEnviadasTodas()
 
 
 
-
-
       public function kanbanEnviadasHoje()
     {
-
-        //Variavel com ID do Usuário
-        $idUsuario = Auth::user()->id;
+        //Variavel
         $hoje = Carbon::today();
         $hoje2 = Carbon::today()->addDay();
-        //dd($hoje);
-        
-        //Dados
-        $tarefas = Tarefa::where('idcriadopor', '=', $idUsuario)
-        ->where('iddestino', '<>', $idUsuario)
-        ->whereBetween('tarefas.created_at', [$hoje, $hoje2])
-        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
-        ->join('users as destino', 'tarefas.iddestino', '=', 'destino.id')
-        ->select('tarefas.*', 'users.name','destino.name as destino' )
-        ->get();
-
-
-//Resumo
-        $aFazer=$tarefas->where('status', 'A Fazer')->all();
-        $emAndamento=$tarefas->where('status', 'Em Andamento')->all();
-        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->all();
-        $concluido=$tarefas->where('status', 'Concluído')->all();
-        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->all();
-
-        $aFazerCount=$tarefas->where('status', 'A Fazer')->count();
-        $emAndamentoCount=$tarefas->where('status', 'Em Andamento')->count();
-        $paraAprovacaoCount=$tarefas->where('status', 'Para Aprovação')->count();
-        $concluidoCount=$tarefas->where('status', 'Concluído')->count();
-        $vencidasCount=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
-        
-
-
-        //Dados para Modal Adicionar e retorno para View com as variaveis
-        if(Auth::user()-> hasRole ( 'User')){
-            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
-            
-            return view('painel.tarefas.kanbanRecebidas', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario'));
-           
-        }elseif(Auth::user()-> hasRole ('Admin|AdminSetor')){
-            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
-            $departamentos->prepend('Escolha um Departamento', '0');
-            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
-        
-            return view('painel.tarefas.kanbanRecebidas', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario'));
-        }
-
+       
+        //Uso da Função Filtro
+        $retorno = $this::enviadasfiltrokanban($hoje, $hoje2);
+        return $retorno;
     }
 
 
 
         public function kanbanEnviadasEstaSemana()
     {
-        $hoje = Carbon::today();
-        //Variavel com ID do Usuário
-        $idUsuario = Auth::user()->id;
+        //Variavel
         $primeiroDiaDaSemana = Carbon::now()->startOfWeek();
         $ultimoDiaDaSemana = Carbon::now()->endOfWeek();
-        //->subDay()
-
-        //Dados
-        $tarefas = Tarefa::where('idcriadopor', '=', $idUsuario)
-        ->where('iddestino', '<>', $idUsuario)
-       ->whereBetween('tarefas.created_at', [$primeiroDiaDaSemana, $ultimoDiaDaSemana])
-        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
-        ->join('users as destino', 'tarefas.iddestino', '=', 'destino.id')
-        ->select('tarefas.*', 'users.name','destino.name as destino' )
-        ->get();
-
-
-
-        //Resumo
-        $aFazer=$tarefas->where('status', 'A Fazer')->all();
-        $emAndamento=$tarefas->where('status', 'Em Andamento')->all();
-        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->all();
-        $concluido=$tarefas->where('status', 'Concluído')->all();
-        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->all();
-
-        $aFazerCount=$tarefas->where('status', 'A Fazer')->count();
-        $emAndamentoCount=$tarefas->where('status', 'Em Andamento')->count();
-        $paraAprovacaoCount=$tarefas->where('status', 'Para Aprovação')->count();
-        $concluidoCount=$tarefas->where('status', 'Concluído')->count();
-        $vencidasCount=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
-
-        //Dados para Modal Adicionar e retorno para View com as variaveis
-        if(Auth::user()-> hasRole ( 'User')){
-            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
-            
-            return view('painel.tarefas.kanbanRecebidas', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario'));
-           
-        }elseif(Auth::user()-> hasRole ('Admin|AdminSetor')){
-            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
-            $departamentos->prepend('Escolha um Departamento', '0');
-            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
-        
-            return view('painel.tarefas.kanbanRecebidas', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario'));
-        }
-
+        //Uso da Função Filtro
+        $retorno = $this::enviadasfiltrokanban($primeiroDiaDaSemana, $ultimoDiaDaSemana);
+        return $retorno;
     }
 
 
         public function kanbanEnviadasEsteMes()
     {
-        $hoje = Carbon::today();
-
         //Variavel com ID do Usuário
-        $idUsuario = Auth::user()->id;
-        $hoje = Carbon::today();
         $primeiroDiaDoMes = Carbon::now()->firstOfMonth();
         $ultimoDiaDoMes = Carbon::now()->lastOfMonth();
-        
 
-
-        //Dados
-        $tarefas = Tarefa::where('idcriadopor', '=', $idUsuario)
-        ->where('iddestino', '<>', $idUsuario)
-        ->whereBetween('tarefas.created_at', [$primeiroDiaDoMes, $ultimoDiaDoMes])
-        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
-        ->join('users as destino', 'tarefas.iddestino', '=', 'destino.id')
-        ->select('tarefas.*', 'users.name','destino.name as destino' )
-        ->get();
-
-
-
-        //Resumo
-        $aFazer=$tarefas->where('status', 'A Fazer')->all();
-        $emAndamento=$tarefas->where('status', 'Em Andamento')->all();
-        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->all();
-        $concluido=$tarefas->where('status', 'Concluído')->all();
-        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->all();
-
-        $aFazerCount=$tarefas->where('status', 'A Fazer')->count();
-        $emAndamentoCount=$tarefas->where('status', 'Em Andamento')->count();
-        $paraAprovacaoCount=$tarefas->where('status', 'Para Aprovação')->count();
-        $concluidoCount=$tarefas->where('status', 'Concluído')->count();
-        $vencidasCount=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
-
-
-        //Dados para Modal Adicionar e retorno para View com as variaveis
-        if(Auth::user()-> hasRole ( 'User')){
-            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
-            
-            return view('painel.tarefas.kanbanRecebidas', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario'));
-           
-        }elseif(Auth::user()-> hasRole ('Admin|AdminSetor')){
-            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
-            $departamentos->prepend('Escolha um Departamento', '0');
-            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
-        
-            return view('painel.tarefas.kanbanRecebidas', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario'));
-        }
+        //Uso da Função Filtro
+        $retorno = $this::enviadasfiltrokanban($primeiroDiaDoMes, $ultimoDiaDoMes);
+        return $retorno;
 
     }
 
@@ -1202,6 +1180,148 @@ public function kanbanEnviadasTodas()
             
 
     }  
+
+
+
+
+
+
+
+// xxxx KANBAN  ENVIADAS DEPARTAMENTOxxxxx
+
+public function kanbanEnviadasTodasDepartamento()
+    {
+
+        $hoje = Carbon::today();
+        //Variavel com ID do Usuário
+        $idUsuario = Auth::user()->id;
+        $UsuarioDepartamento = Auth::user()->departamento->id;
+        //Dados
+        $tarefas = Tarefa::where('tarefas.departamento_id', '=', $UsuarioDepartamento)
+                    ->where('iddestino', '<>', Null)
+                    ->where('status','<>','Com Aprovador')
+                    ->where('status','<>','Devolvida')
+                    ->join('users as destino', 'tarefas.iddestino', '=', 'destino.id')
+                    ->select('tarefas.*','destino.name as destino' )
+                    ->get();
+
+        //Datos separados por Grupos / Colunas
+        $aFazer=$tarefas->where('status', 'A Fazer')->all();
+        $emAndamento=$tarefas->where('status', 'Em Andamento')->all();
+        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->all();
+        $concluido=$tarefas->where('status', 'Concluído')->all();
+        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->all();
+
+
+        //Resumo ou Count
+        $aFazerCount=$tarefas->where('status', 'A Fazer')->count();
+        $emAndamentoCount=$tarefas->where('status', 'Em Andamento')->count();
+        $paraAprovacaoCount=$tarefas->where('status', 'Para Aprovação')->count();
+        $concluidoCount=$tarefas->where('status', 'Concluído')->count();
+        $vencidasCount=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
+        
+
+        //Retorno para tela     
+        return view('painel.tarefas.kanbanRecebidasDepartamento', compact('tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario','hoje'));
+           
+    }
+
+
+
+      public function kanbanEnviadasHojeDepartamento()
+    {
+        //Variavel
+        $hoje = Carbon::today();
+        $hoje2 = Carbon::today()->addDay();
+       
+        //Uso da Função Filtro
+        $retorno = $this::enviadasfiltrokanbanDepartamento($hoje, $hoje2);
+        return $retorno;
+    }
+
+
+
+        public function kanbanEnviadasEstaSemanaDepartamento()
+    {
+        //Variavel
+        $primeiroDiaDaSemana = Carbon::now()->startOfWeek();
+        $ultimoDiaDaSemana = Carbon::now()->endOfWeek();
+        //Uso da Função Filtro
+        $retorno = $this::enviadasfiltrokanbanDepartamento($primeiroDiaDaSemana, $ultimoDiaDaSemana);
+        return $retorno;
+    }
+
+
+        public function kanbanEnviadasEsteMesDepartamento()
+    {
+        //Variavel com ID do Usuário
+        $primeiroDiaDoMes = Carbon::now()->firstOfMonth();
+        $ultimoDiaDoMes = Carbon::now()->lastOfMonth();
+
+        //Uso da Função Filtro
+        $retorno = $this::enviadasfiltrokanbanDepartamento($primeiroDiaDoMes, $ultimoDiaDoMes);
+        return $retorno;
+
+    }
+
+
+    public function enviadasfiltrokanbanDepartamento($inicio, $fim)
+    {
+
+        //Variavel com ID do Usuário
+        $idUsuario = Auth::user()->id;
+        $hoje = Carbon::today();
+        $UsuarioDepartamento = Auth::user()->departamento->id;
+        
+        //Dados
+        $tarefas = Tarefa::where('tarefas.departamento_id', '=', $UsuarioDepartamento)
+        ->where('iddestino', '<>', Null)
+        ->where('status','<>','Com Aprovador')
+        ->where('status','<>','Devolvida')
+        ->whereBetween('tarefas.created_at', [$inicio, $fim])
+        ->join('users as destino', 'tarefas.iddestino', '=', 'destino.id')
+        ->select('tarefas.*','destino.name as destino' )
+        ->get();
+
+
+        //Resumo
+        $aFazer=$tarefas->where('status', 'A Fazer')->all();
+        $emAndamento=$tarefas->where('status', 'Em Andamento')->all();
+        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->all();
+        $concluido=$tarefas->where('status', 'Concluído')->all();
+        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->all();
+
+        $aFazerCount=$tarefas->where('status', 'A Fazer')->count();
+        $emAndamentoCount=$tarefas->where('status', 'Em Andamento')->count();
+        $paraAprovacaoCount=$tarefas->where('status', 'Para Aprovação')->count();
+        $concluidoCount=$tarefas->where('status', 'Concluído')->count();
+        $vencidasCount=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
+
+
+        
+        //Dados para Modal Adicionar e retorno para View com as variaveis
+        if(Auth::user()-> hasRole ( 'User')){
+            $usuariosDepartamento = Auth::user()->departamento->user->pluck('name','id');
+            
+            return view('painel.tarefas.kanbanRecebidas', compact('usuariosDepartamento','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario','inicio','fim'));
+           
+        }elseif(Auth::user()-> hasRole ('Admin|AdminSetor')){
+            $departamentos = Departamento::departamento_painel()->pluck('nome', 'id');
+            $departamentos->prepend('Escolha um Departamento', '0');
+            $usuariosDepartamento = Auth::user()->departamento->user->all(); 
+        
+            return view('painel.tarefas.kanbanRecebidasDepartamento', compact('usuariosDepartamento','departamentos','tarefas','aFazer','emAndamento','vencidas','paraAprovacao','concluido','idUsuario','hoje','aFazerCount','emAndamentoCount','vencidasCount','paraAprovacaoCount','concluidoCount','idUsuario','inicio','fim'));
+        }
+        
+            
+
+    }  
+
+
+
+
+
+
 
 
     /**
@@ -1435,7 +1555,7 @@ public function kanbanEnviadasTodas()
         $tarefa = Tarefa::where('id',$request->id)->first();
         if(Auth::user()-> hasRole ( 'User')){
 
-            $tarefa->iddestino=$request->colaborador;
+            $tarefa->iddestino=$request->usuario;
             $tarefa->save();
 
             //Mensagem para os Usuários 
@@ -1445,6 +1565,10 @@ public function kanbanEnviadasTodas()
         
         }elseif(Auth::user()-> hasRole ('Admin|AdminSetor')){
             
+            $tarefa->iddestino=$request->usuario;
+            $tarefa->save();
+
+/*            
             $tarefa->nome=$request->get('tarefa');
             $tarefa->descricao=$request->get('descricao');
             $tarefa->entrega=$request->get('entrega');
@@ -1454,7 +1578,7 @@ public function kanbanEnviadasTodas()
             $tarefa->idcriadopor=Auth::user()->id;
             $tarefa->save();
 
-                //Mensagem para os Usuários 
+*/                //Mensagem para os Usuários 
         notify()->success('Tarefa Atualizada com Sucesso!','', ['timeOut' => '8000', 'progressBar'=> 'true']);
 
 
@@ -1625,7 +1749,7 @@ public function kanbanEnviadasTodas()
         //dd($historicodatarefa);
 
         // Ordenar pela data de Criação das Atividades
-        $historicodatarefa = $historicodatarefa->sortByDesc('created_at');
+        //$historicodatarefa = $historicodatarefa->sortByDesc('created_at');
         //dd($historicodatarefa);
 
         return view('painel.tarefas.historicoTarefa', compact('historicodatarefa'));
@@ -1660,5 +1784,109 @@ public function kanbanEnviadasTodas()
     }
 
 
+    public function calendario()
+    {
+        return view('painel.tarefas.calendario');
+
+    }
+
+
+    public function calendarioDepartamento()
+    {
+        return view('painel.tarefas.calendarioDepartamento');
+
+    }
+
+
+
+
+    public function calendarioDados()
+    {
+        //Variavel com ID do Usuário
+        $idUsuario = Auth::user()->id;
+
+        //Dados
+        $tarefas = Tarefa::where('iddestino', '=', $idUsuario)
+        ->select('nome as title', 'entrega as start', 'descricao','id','prioridade')
+        ->get();
+        
+        //Dados para Modal Adicionar e retorno para View com as variaveis
+        if(Auth::user()-> hasRole ( 'User')){
+            return response()->json($tarefas);
+        }elseif(Auth::user()-> hasRole ( 'Admin|AdminSetor')){
+            return response()->json($tarefas);
+        }
+    }
+
+
+
+
+    public function calendarioDadosDepartamento()
+    {
+
+        $idUsuario = Auth::user()->id;
+        $UsuarioDepartamento = Auth::user()->departamento->id;
+        
+        //Dados
+        $tarefas = Tarefa::where('departamento_id', '=', $UsuarioDepartamento)
+                    ->where('iddestino', '=', Null)
+                    ->where('status','<>','Com Aprovador')
+                    ->where('status','<>','Devolvida')
+                    ->select('nome as title', 'entrega as start', 'descricao','id','prioridade')
+                    ->get();
+
+
+        //Dados para Modal Adicionar e retorno para View com as variaveis
+        if(Auth::user()-> hasRole ( 'User')){
+            return response()->json($tarefas);
+        }elseif(Auth::user()-> hasRole ( 'Admin|AdminSetor')){
+            return response()->json($tarefas);
+        }
+    }
+
+
+
+
+
+// ************************** AJUSTANDO em 22/07/2019 ******************************
+
+    public function calendarioDadosTarefasRecebidas()
+    {
+        //Variavel com ID do Usuário
+        $idUsuario = Auth::user()->id;
+
+        //Dados
+        $tarefas = Tarefa::where('iddestino', '=', $idUsuario)
+        ->select('nome as title', 'entrega as start', 'descricao','id','prioridade')
+        ->get();
+        
+        //Dados para Modal Adicionar e retorno para View com as variaveis
+        if(Auth::user()-> hasRole ( 'User')){
+            return response()->json($tarefas);
+        }elseif(Auth::user()-> hasRole ( 'Admin|AdminSetor')){
+            return response()->json($tarefas);
+        }
+    }
+
+    public function calendarioDadosTarefasEnviadas()
+    {
+        //Variavel com ID do Usuário
+        $idUsuario = Auth::user()->id;
+
+        //Dados
+        $tarefas = Tarefa::where('idcriadopor', '=', $idUsuario)
+        ->where('iddestino', '<>', $idUsuario)
+        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
+        ->join('users as destino', 'tarefas.iddestino', '=', 'destino.id')
+        ->select('tarefas.nome as title', 'tarefas.entrega as start', 'tarefas.descricao','tarefas.id','tarefas.prioridade', 'users.name','destino.name as destino' )
+        ->get();
+
+        //Dados para Modal Adicionar e retorno para View com as variaveis
+        if(Auth::user()-> hasRole ( 'User')){
+            return response()->json($tarefas);
+        }elseif(Auth::user()-> hasRole ( 'Admin|AdminSetor')){
+            return response()->json($tarefas);
+        }
+    }
 
 }

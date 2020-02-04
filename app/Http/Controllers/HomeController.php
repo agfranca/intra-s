@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Noticia;
 use App\Banner;
+use Carbon\Carbon;
+use App\Tarefa;
 use Image;
 
 class HomeController extends Controller
@@ -38,7 +40,34 @@ class HomeController extends Controller
          $banner4 = Image::make('banner/4.jpg');
 
          $urls_banners = Banner::bannersite(); 
+
+
+
+
+
+
+
+
+
+        $hoje = Carbon::today();
+        //Variavel com ID do Usuário
+        $idUsuario = Auth::user()->id;
+
+        //Dados
+        $tarefas = Tarefa::where('iddestino', '=', $idUsuario)
+        ->join('users', 'tarefas.idcriadopor', '=', 'users.id')
+        ->select('tarefas.*', 'users.name')
+        ->get();
+
+        //Resumo
+        $aFazer=$tarefas->where('status', 'A Fazer')->count();
+        $emAndamento=$tarefas->where('status', 'Em Andamento')->count();
+        $paraAprovacao=$tarefas->where('status', 'Para Aprovação')->count();
+        $concluido=$tarefas->where('status', 'Concluído')->count();
+        $vencidas=$tarefas->where('entrega','<>','')->where('status','<>','Concluído')->where('entrega','<', $hoje)->count();
+
+
                   
-        return view('site/index', compact('usuario','noticiasdousuario','img','avatar','banner1','banner2','banner3','banner4','urls_banners'));
+        return view('site/index', compact('usuario','noticiasdousuario','img','avatar','banner1','banner2','banner3','banner4','urls_banners','tarefas','aFazer','emAndamento','paraAprovacao','concluido','vencidas','hoje','idUsuario'));
     }
 }

@@ -22,13 +22,17 @@ class CreateTarefasTable extends Migration
             $table->datetime('entrega')->nullable();
             $table->string('anexo')->nullable();
             $table->enum('prioridade', array( 'Baixa', 'Normal', 'Alta'))->nullable();
-            $table->enum('status', array('A Fazer', 'Em Andamento', 'Concluído', 'Arquivado', 'Para Aprovação'))->nullable();
+            $table->enum('status', array('A Fazer','Em Andamento','Concluído','Arquivado','Para Aprovação','Com Aprovador','Devolvida'))->nullable();
             $table->integer('iddestino')->nullable();
             $table->integer('idtarefapai')->nullable();
             $table->integer('idcriadopor')->nullable();
             $table->integer('arquivo_id')->nullable();
+            $table->integer('project_id')->nullable();
+            $table->integer('projecttype_id')->nullable();
+            $table->integer('departamento_id')->nullable();
         });
     }
+
 
     /**
      * Reverse the migrations.

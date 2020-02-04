@@ -23,7 +23,7 @@
 				$(document).ready( function () {
 				$('#table_id').DataTable({
 
-			"order": [[ 3, "asc" ]],
+			 "order": [[ 2, "desc" ]],
           
            "language": {
 					"sEmptyTable": "Nenhum registro encontrado",

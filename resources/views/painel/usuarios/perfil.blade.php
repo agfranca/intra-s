@@ -102,7 +102,7 @@
           @if(Auth::user()->arquivo_id==Null)
           <img src="/adminlte/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
           @else
-          <img src="{{Auth::user()->arquivo->url}}" width="160" height="160" class="img-circle" alt="User Image">
+          <img src="{{Auth::user()->arquivo->url}}" width="120" height="120" class="img-circle" alt="User Image">
           @endif
         </div>
         <!-- END SIDEBAR USERPIC -->

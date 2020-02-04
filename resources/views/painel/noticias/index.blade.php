@@ -64,9 +64,13 @@
                     @endif
                     Publicado por: {!!$noticia->usuario->name!!}
                     <br>
-                    <h4>{!! $noticia->noticia->titulo!!}</h4>
-                    {!! $noticia->noticia->noticia!!}
-              
+                    <h3><b>{!! $noticia->noticia->titulo!!}</b></h3>
+                    @if($noticia->noticia->arquivo_id)
+                    <img src="{!!$noticia->noticia->arquivo->url!!}" class="img-responsive" style="margin-bottom: 2px">
+                    @endif
+                    <div class="text-justify">
+                    {!!$noticia->noticia->noticia!!}
+                    </div>
                   </td>
 
                                     		

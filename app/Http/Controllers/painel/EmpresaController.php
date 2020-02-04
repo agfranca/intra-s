@@ -148,4 +148,5 @@ class EmpresaController extends Controller
                ->with('sucess','Empresa apagada com Sucesso!');
         
     }
+
 }

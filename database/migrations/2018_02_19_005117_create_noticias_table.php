@@ -18,6 +18,7 @@ class CreateNoticiasTable extends Migration
             $table->string('titulo')->nullable();
 			$table->string('publicado')->default('N');
 			$table->longText('noticia');
+            $table->integer('arquivo_id');
             $table->integer('user_id')->unsigned();
             $table->timestamps();
         });

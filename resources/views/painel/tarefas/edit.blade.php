@@ -55,10 +55,12 @@ $(document).ready(function(){
                 <input name="id" type="hidden" value="{{ $tarefa->id}}">
 
                 <div class="form-group">
+                  <label class="control-label">Tarefa:</label>
                   <input placeholder="Digite o Nome da Tarefa" name="tarefa" type="text" required class="form-control form" value="{{ $tarefa->nome}}">
                 </div>
-                {{$tarefa->descricao}}
+                
                 <div class="form-group">
+                  <label class="control-label">Descrição:</label>
                   <textarea title="Descrição da Tarefa" class="form-control form" name="descricao" placeholder="Descrição da Tarefa">{{ $tarefa->descricao}}</textarea>
                 </div>
                 
@@ -68,10 +70,10 @@ $(document).ready(function(){
                   <div class="form-group">
                   <label class="control-label">Data de Entrega:</label>
 
-                  <input placeholder="Digite a data de Entrega" type="date" name="entrega" class="form-control form" value="{{Carbon\Carbon::parse($tarefa->entrega)->format('Y-m-d')}}">
+                  <input placeholder="Digite a data de Entrega" type="datetime-local" name="entrega" class="form-control form" value="{{Carbon\Carbon::parse($tarefa->entrega)->format('Y-m-d\TH:i')}}">
                 </div>
                   
-
+                  {{-- value="{{Carbon\Carbon::parse($tarefa->entrega)->format('Y-m-d h:m')}}" --}}
 
                 </div>
                 <div style="padding-right: 0px;" class="col-md-6">
@@ -175,8 +177,6 @@ $(document).ready(function(){
               
               {!! Form::submit('Salvar', ['class' => 'btn btn-primary']); !!}
             </form>
-            <a href="javascript:history.back()" class="btn btn-default">Fechar</a>
-
             <button type="button" class="btn btn-default" onclick="goBack()">Fechar</button>
                            
           </div> 

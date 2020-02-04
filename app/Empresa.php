@@ -75,6 +75,35 @@ class Empresa extends Model
      return $filhos;
     } 
 
+    public static function empresasfilhostodos($empresas)
+    {
+        static $count;
+        static $empresasfilhos=[];
+        $empresasfilhos = collect($empresasfilhos); 
+        $empresasfilhos->push($empresas);
+
+        
+        static $count;
+        $count++;
+      
+        $filhos = Empresa::empresasfilhos($empresas->id);
+        foreach ($filhos as $empresa ) { 
+            Empresa::empresasfilhostodos($empresa);
+            $count--;
+            //echo "meio-$count ";
+        }
+       
+       //echo "final-$count ";
+       if ($count==1) {
+        //Ultimo a ser preocessado.
+        //echo "$myJSON";
+        return $empresasfilhos;
+       }
+       
+
+    }
+
+
     public static function empresaraiz()
     {
      $raiz = Empresa::where('empresa_pai',Null)->get()->first();
@@ -279,17 +308,37 @@ public static function listarempresasdepartamentoseditar($empresas)
         return $myJSON;
        }
        
-
     }
 
 
+    public static function EmpresasLista()
+    {
+    if(Auth::user()-> hasRole ( 'Admin' )){
+        $empresa = Empresa::empresa_user_logado();
+        $todasempresas = Empresa::empresas_painel($empresa);
+        return $todasempresas;
+        }
+    }
 
+    public static function EmpresasDepartamentosLista()
+    {
+    if(Auth::user()-> hasRole ( 'Admin' )){
+        $departamentosDasEmpresas = Empresa::EmpresasLista()->first();
+        $departamentosDasEmpresas = $departamentosDasEmpresas->with('departamentos')->get();
+        //Empresas e Departamento
+        $departamentosDasEmpresas = $departamentosDasEmpresas->first();
+        $departamentosDasEmpresas = $departamentosDasEmpresas->departamentos->first();
+        $departamentosDasEmpresas = $departamentosDasEmpresas->with('links')->get();
+        //Departamentos e |Links
+        dd('Alexandre');
+        dd($departamentosDasEmpresas);
+        $departamentosDasEmpresas = $departamentosDasEmpresas->first();
+        $departamentosDasEmpresas = $departamentosDasEmpresas->links->first();
+        $departamentosDasEmpresas = $departamentosDasEmpresas->with('links')->get();
+        //dd($departamentosDasEmpresas);
+        
 
-
-
-
-
-
-
-
+        return $departamentosDasEmpresas->unique('link_id');
+        }
+    }
 }

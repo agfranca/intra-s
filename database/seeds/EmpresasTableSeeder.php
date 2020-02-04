@@ -21,5 +21,15 @@ class EmpresasTableSeeder extends Seeder
         $EmpresaB->nome = 'FECOMERCIO SE';
         $EmpresaB->empresa_pai = 1;
         $EmpresaB->save();
+
+        $EmpresaC = new Empresa;
+        $EmpresaC->nome = 'SESC';
+        $EmpresaC->empresa_pai = 2;
+        $EmpresaC->save();
+
+        $EmpresaD = new Empresa;
+        $EmpresaD->nome = 'SENAC';
+        $EmpresaD->empresa_pai = 2;
+        $EmpresaD->save();
     }
 }

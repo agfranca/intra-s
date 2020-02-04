@@ -29,6 +29,8 @@ use App\Departamento;
 use App\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Storage;
+use App\Arquivo;
 
 class NoticiaController extends Controller
 {
@@ -77,7 +79,7 @@ class NoticiaController extends Controller
     //testa se o usuario logado é Administrador
       $admin =  Auth::user()-> hasRole ( 'Admin|AdminSetor' );
     if ($admin) {
-    
+
 
         //Salvar Noticia
         $departamento = $request->resultado2;
@@ -91,14 +93,39 @@ class NoticiaController extends Controller
 
             //echo 'Selecione um departamento';
         }else{
-           
+
+
+
+            //Recuperando o Arquivo da Imagem enviado e seus atributos.
+             $arquivo = request()->file('file');
+            //Se tiver arquivo
+            if ($arquivo) {
+             
+                $file['nome'] = $arquivo->getClientOriginalName();
+                $file['extencao'] = $arquivo->getMimeType();
+                $url = $arquivo->store('public/noticia');
+                $file['url'] = Storage::url($url);
+
+                //Salvando informações da imagem no Banco 
+                $ArquivoBanco = new Arquivo;
+                $ArquivoBanco->nome = $file['nome'];
+                $ArquivoBanco->extencao = $file['extencao'];
+                $ArquivoBanco->url = $file['url'];
+                $ArquivoBanco->user_id=Auth::user()->id;
+                $ArquivoBanco->save();
+            }
+          
            //Cria e Salva a Noticia
              $noticia = new Noticia;
              $noticia->noticia=$request->get('noticia');
              $noticia->titulo=$request->get('titulo');
              $noticia->publicado='N';
              $noticia->user_id=Auth::user()->id;
+             if ($arquivo) {
+             $noticia->arquivo_id = $ArquivoBanco->id;
+             }
              $noticia->save();
+
              //Separa os departamentos das empresas
             $departamento2 = explode(",", $departamento);
             //dd($departamento2);
@@ -146,6 +173,21 @@ class NoticiaController extends Controller
     }else{
 
     //Quando for usuário, libarar somente a noticia para seu departamento
+
+            //Recuperando o Arquivo enviado e seus atributos.
+             $arquivo = request()->file('file');
+             $file['nome'] = $arquivo->getClientOriginalName();
+             $file['extencao'] = $arquivo->getMimeType();
+             $url = $arquivo->store('public/noticia');
+             $file['url'] = Storage::url($url);
+
+            //Salvando informações da imagem no Banco 
+            $ArquivoBanco = new Arquivo;
+            $ArquivoBanco->nome = $file['nome'];
+            $ArquivoBanco->extencao = $file['extencao'];
+            $ArquivoBanco->url = $file['url'];
+            $ArquivoBanco->user_id=Auth::user()->id;
+            $ArquivoBanco->save();
            
            //Cria e Salva a Noticia
              $noticia = new Noticia;
@@ -153,6 +195,9 @@ class NoticiaController extends Controller
              $noticia->titulo=$request->get('titulo');
              $noticia->publicado='N';
              $noticia->user_id=Auth::user()->id;
+             if ($arquivo) {
+             $noticia->arquivo_id = $ArquivoBanco->id;
+             }
              $noticia->save();
 
             
@@ -172,8 +217,6 @@ class NoticiaController extends Controller
                    ->route('painel.noticias.index')   
                    ->with('sucess','Notícia adicionado com Sucesso!');
 
-
-
     }
 }
 
@@ -185,7 +228,9 @@ class NoticiaController extends Controller
      */
     public function show($id)
     {
-        //
+        $noticia = Noticia::where('id',$id)->get()->first();
+
+         return view('painel.noticias.show',compact('noticia'));
     }
 
     /**
@@ -227,13 +272,39 @@ class NoticiaController extends Controller
     public function update(Request $request, Noticia $noticia)
     {
 
-       //Fazer validacao de dados 
+       //Fazer validacao de dados
+        //Recuperando o Arquivo da Imagem enviado e seus atributos.
+             $arquivo = request()->file('file');
+             //dd($arquivo);
+            //Se tiver arquivo
+            if ($arquivo) {
+                $file['nome'] = $arquivo->getClientOriginalName();
+                $file['extencao'] = $arquivo->getMimeType();
+                $url = $arquivo->store('public/noticia');
+                $file['url'] = Storage::url($url);
+
+        //Salvando informações da imagem no Banco 
+                $ArquivoBanco = new Arquivo;
+                $ArquivoBanco->nome = $file['nome'];
+                $ArquivoBanco->extencao = $file['extencao'];
+                $ArquivoBanco->url = $file['url'];
+                $ArquivoBanco->user_id=Auth::user()->id;
+                $ArquivoBanco->save();
+            }
+
+        //Fim do Salvamento da Imagem
+
         //Atualizando dados da noticia
              $noticia->noticia = $request->get('noticia');
              $noticia->titulo = $request->get('titulo');
              $noticia->user_id = Auth::user()->id;
+             if ($arquivo) {
+             $noticia->arquivo_id = $ArquivoBanco->id;
+             }
              //dd("estou aqui!!!");
              $noticia->save();
+
+
 
 
     $admin =  Auth::user()-> hasRole ( 'Admin|AdminSetor' );

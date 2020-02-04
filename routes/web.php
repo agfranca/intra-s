@@ -37,12 +37,14 @@
         
 
 
-    Route::get('/', 'HomeController@index');
-    Route::get('/home', 'HomeController@index')->name('home');
+    //Route::get('/', 'HomeController@index');
+    //Route::get('/home', 'HomeController@index')->name('home');
 
     //Route::group(['prefix'=> 'painel'],function(){
-		
-
+	
+    //'painel\PainelController@index')->name('painel');
+    Route::get('/', 'painel\PainelController@index');	
+    Route::get('/home', 'painel\PainelController@index')->name('home');
 
 
     //});
@@ -80,9 +82,6 @@
         Route::get('painel/departamentos/{departamento}/edit', 'painel\DepartamentoController@edit')->name('painel.departamentos.edit');
         Route::put('painel/departamentos/{departamento}', 'painel\DepartamentoController@update')->name('painel.departamentos.updade');
         Route::delete('painel/departamentos/{departamento}', 'painel\DepartamentoController@destroy')->name('painel.departamentos.destroy');
-        
-
-
     });
 
 //} redirect('http://intra-s.test/login');
@@ -106,6 +105,7 @@
         Route::get('painel/noticias/create', 'painel\NoticiaController@create')->name('painel.noticias.create');
         Route::post('painel/noticias/create', 'painel\NoticiaController@store')->name('painel.noticias.store');
         Route::get('painel/noticias/{noticia}/edit', 'painel\NoticiaController@edit')->name('painel.noticias.edit');
+        Route::get('painel/noticias/{noticia}/show', 'painel\NoticiaController@show')->name('painel.noticias.show');
         Route::put('painel/noticias/{noticia}', 'painel\NoticiaController@update')->name('painel.noticias.updade');
         Route::delete('painel/noticias/{noticia}', 'painel\NoticiaController@destroy')->name('painel.noticias.destroy');
 
@@ -152,6 +152,24 @@
 
         Route::get('painel/tarefas/lista/recebidas/filtro/{inicio}/{fim}', 'painel\TarefasController@recebidasfiltro')->name('painel.tarefas.recebidasFiltro');
 
+
+
+
+        //Listas RECEBIDAS DEPARTAMENTO
+        Route::get('painel/tarefas/lista/recebidas/departamento/todas', 'painel\TarefasController@recebidasTodasDepartamento')->name('painel.tarefas.recebidasTodasDepartamento');
+
+        Route::get('painel/tarefas/lista/recebidas/departamento/hoje', 'painel\TarefasController@recebidasHojeDepartamento')->name('painel.tarefas.recebidasHojeDepartamento');
+
+        Route::get('painel/tarefas/lista/recebidas/departamento/estasemana', 'painel\TarefasController@recebidasEstaSemanaDepartamento')->name('painel.tarefas.recebidasEstaSemanaDepartamento');
+
+        Route::get('painel/tarefas/lista/recebidas/departamento/estemes', 'painel\TarefasController@recebidasEsteMesDepartamento')->name('painel.tarefas.recebidasEsteMesDepartamento');
+
+        Route::get('painel/tarefas/lista/recebidas/departamento/filtro/{inicio}/{fim}', 'painel\TarefasController@recebidasfiltroDepartamento')->name('painel.tarefas.recebidasFiltroDepartamento');
+
+
+
+
+
         
         //Listas ENVIADAS
         Route::get('painel/tarefas/lista/enviadas/todas', 'painel\TarefasController@enviadasTodas')->name('painel.tarefas.enviadasTodas');
@@ -163,6 +181,23 @@
         Route::get('painel/tarefas/lista/enviadas/estemes', 'painel\TarefasController@enviadasEsteMes')->name('painel.tarefas.enviadasEsteMes');
 
         Route::get('painel/tarefas/lista/enviadas/filtro/{inicio}/{fim}', 'painel\TarefasController@enviadasfiltro')->name('painel.tarefas.enviadsFiltro');
+
+
+
+        
+        //Listas ENVIADAS DEPARTAMENTO
+        Route::get('painel/tarefas/lista/enviadas/departamento/todas', 'painel\TarefasController@enviadasTodasDepartamento')->name('painel.tarefas.enviadasTodasDepartamento');
+        
+        Route::get('painel/tarefas/lista/enviadas/departamento/hoje', 'painel\TarefasController@enviadasHojeDepartamento')->name('painel.tarefas.enviadasHojeDepartamento');
+
+        Route::get('painel/tarefas/lista/enviadas/departamento/estasemana', 'painel\TarefasController@enviadasEstaSemanaDepartamento')->name('painel.tarefas.enviadasEstaSemanaDepartamento');
+
+        Route::get('painel/tarefas/lista/enviadas/departamento/estemes', 'painel\TarefasController@enviadasEsteMesDepartamento')->name('painel.tarefas.enviadasEsteMesDepartamento');
+
+        Route::get('painel/tarefas/lista/enviadas/departamento/filtro/{inicio}/{fim}', 'painel\TarefasController@enviadasfiltroDepartamento')->name('painel.tarefas.enviadsFiltroDepartamento');
+
+
+
 
         
         //ANEXO
@@ -200,6 +235,9 @@
 
         Route::get('update-status/{idTarefa}/{status}','painel\TarefasController@uptadeStatus');
 
+        Route::get('update-status-projeto/{idProjeto}/{status}','painel\TarefasController@uptadeStatusProjeto');
+
+
             ///{idTarefa}/{status}
 
 
@@ -230,6 +268,27 @@
         Route::get('painel/tarefas/kanban/recebidas/filtro/{inicio}/{fim}', 'painel\TarefasController@recebidasfiltrokanban')->name('painel.tarefas.recebidasFiltroKanban');
 
 
+
+
+
+        //KANBAN TAREFAS RECEBIDAS DEPARTAMENTO
+
+        Route::get('painel/tarefas/kanban/recebidas/departamento/todas', 'painel\TarefasController@kanbanRecebidasTodasDepartamento')->name('painel.tarefas.kanban.recebidas.todas.Departamento');
+
+
+        Route::get('painel/tarefas/kanban/recebidas/departamento/hoje', 'painel\TarefasController@kanbanRecebidasHojeDepartamento')->name('painel.tarefas.kanban.recebidasHoje.Departamento');
+
+        Route::get('painel/tarefas/kanban/recebidas/departamento/estasemana', 'painel\TarefasController@kanbanRecebidasEstaSemanaDepartamento')->name('painel.tarefas.kanban.recebidasEstaSemana.Departamento');
+
+        Route::get('painel/tarefas/kanban/recebidas/departamento/estemes', 'painel\TarefasController@kanbanRecebidasEsteMesDepartamento')->name('painel.tarefas.kanban.recebidasEsteMes.Departamento');
+
+        Route::get('painel/tarefas/kanban/recebidas/departamento/filtro/{inicio}/{fim}', 'painel\TarefasController@recebidasfiltrokanbanDepartamento')->name('painel.tarefas.recebidasFiltroKanban.Departamento');
+
+
+
+
+
+
         //KANBAN TAREFAS ENVIADAS
 
         Route::get('painel/tarefas/kanban/enviadas/todas', 'painel\TarefasController@kanbanEnviadasTodas')->name('painel.tarefas.kanban.enviadas.todas');
@@ -242,6 +301,25 @@
 
 
         Route::get('painel/tarefas/kanban/enviadas/filtro/{inicio}/{fim}', 'painel\TarefasController@enviadasfiltrokanban')->name('painel.tarefas.enviadasFiltroKanban');
+
+
+
+
+        //KANBAN TAREFAS ENVIADAS DEPARTAMENTO
+
+        Route::get('painel/tarefas/kanban/enviadas/departamento/todas', 'painel\TarefasController@kanbanEnviadasTodasDepartamento')->name('painel.tarefas.kanban.enviadas.todas.Departamento');
+
+        Route::get('painel/tarefas/kanban/enviadas/departamento/hoje', 'painel\TarefasController@kanbanEnviadasHojeDepartamento')->name('painel.tarefas.kanban.enviadasHoje.Departamento');
+
+        Route::get('painel/tarefas/kanban/enviadas/departamento/estasemana', 'painel\TarefasController@kanbanEnviadasEstaSemanaDepartamento')->name('painel.tarefas.kanban.enviadasEstaSemana.Departamento');
+
+        Route::get('painel/tarefas/kanban/enviadas/departamento/estemes', 'painel\TarefasController@kanbanEnviadasEsteMesDepartamento')->name('painel.tarefas.kanban.enviadasEsteMes.Departamento');
+
+
+        Route::get('painel/tarefas/kanban/enviadas/departamento/filtro/{inicio}/{fim}', 'painel\TarefasController@enviadasfiltrokanbanDepartamento')->name('painel.tarefas.enviadasFiltroKanban.Departamento');
+
+
+
 
         
         //HISTORICO TAREFA
@@ -263,6 +341,49 @@
 
         Route::post('painel/tarefas/encaminhar/update', 'painel\TarefasController@encaminharUpdate')->name('painel.tarefas.encaminharupdate');
 
+
+        //TAREFAS CALENDARIO
+        Route::get('painel/tarefas/calendario', 'painel\TarefasController@calendario')->name('painel.tarefas.calendario');
+
+        Route::get('painel/tarefas/departamento/calendario', 'painel\TarefasController@calendarioDepartamento')->name('painel.tarefas.calendarioDepartamento');
+
+        
+        Route::get('painel/tarefas/calendariodados', 'painel\TarefasController@calendarioDadosTarefasEnviadas')->name('painel.tarefas.calendarioDados');
+
+        Route::get('painel/tarefas/calendariodados/departamento', 'painel\TarefasController@calendarioDadosDepartamento')->name('painel.tarefas.calendarioDadosDepartamento');
+
+
+        Route::get('painel/tarefas/calendariodadostarefasenviadas', 'painel\TarefasController@calendarioDadosTarefasEnviadas')->name('painel.tarefas.calendarioDados2');
+
+        //LINKS
+
+         Route::get('painel/links', 'painel\LinkController@index')->name('painel.links.index');
+         Route::get('painel/links/create', 'painel\LinkController@create')->name('painel.links.create');
+        Route::post('painel/links/create', 'painel\LinkController@store')->name('painel.links.store');
+        Route::get('painel/links/{link}/edit', 'painel\LinkController@edit')->name('painel.links.edit');
+        Route::delete('painel/links/{link}', 'painel\LinkController@destroy')->name('painel.links.destroy');
+
+
+        //NOTIFICAÇÃO
+        Route::get('painel/notificar', 'painel\NotificarController@index')->name('painel.notificar.index');
+        Route::get('painel/notificar/create', 'painel\NotificarController@create')->name('painel.notificar.create'); 
+
+        Route::post('painel/notificar/create', 'painel\NotificarController@store')->name('painel.notificar.store');
+
+       Route::get('painel/notificar/create/{departamento}', 'painel\NotificarController@storeNCM')->name('painel.notificar.storeNCM');
+       
+       Route::get('painel/notificar/create/{departamento}/{projecttype}', 'painel\NotificarController@formularioprojecttype')->name('painel.notificar.formularioprojecttype');
+
+       Route::post('painel/notificar/gravarformularioprojecttype', 'painel\NotificarController@gravarformularioprojecttype')->name('painel.notificar.gravarformularioprojecttype');
+    
+        Route::get('painel/notificar/tarefas/{projeto}', 'painel\NotificarController@tarefasdoprojeto')->name('painel.notificar.tarefasdoprojeto');
+
+        Route::get('painel/notificar/tarefascomboanexo/{projeto}', 'painel\NotificarController@tarefascomboanexo')->name('painel.notificar.tarefascomboanexo');
+
+        Route::get('painel/notificar/tarefascombocomentario/{projeto}', 'painel\NotificarController@tarefascombocomentario')->name('painel.notificar.tarefascombocomentario');
+
+        Route::get('painel/notificar/aprovadores', 'painel\NotificarController@aprovadores')->name('painel.notificar.aprovadores');
+        
 
     });
 

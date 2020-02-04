@@ -27,5 +27,18 @@ class DepartamentosTableSeeder extends Seeder
         $DepartamentoC->nome = 'Financeiro';
         $DepartamentoC->empresa_id = 2;
         $DepartamentoC->save();
+
+
+        $DepartamentoD = new Departamento;
+        $DepartamentoD->nome = 'Diretoria';
+        $DepartamentoD->empresa_id = 3;
+        $DepartamentoD->save();
+
+
+        $DepartamentoE = new Departamento;
+        $DepartamentoE->nome = 'Eventos';
+        $DepartamentoE->empresa_id = 4;
+        $DepartamentoE->save();
+
     }
 }
