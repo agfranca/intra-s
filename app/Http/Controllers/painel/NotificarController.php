@@ -28,7 +28,7 @@ class NotificarController extends Controller
         $departamentos = Departamento::departamento_painel();
         //dd($departamentos);
         $notificacoes = Project::projetos();
-        dd($notificacoes);
+        //dd($notificacoes);
         return view('painel.notificacao.index', compact('departamentos','notificacoes'));
 
         }else{
