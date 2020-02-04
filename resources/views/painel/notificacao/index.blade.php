@@ -103,60 +103,6 @@
                        $conteudobutao="";
                        $cor="";
                       //dd($status->count());
-                      
-                      foreach($status as $statu){
-                      
-                       $statustipo = $statu->status;
-                        //dd($statustipo);
-                       switch ($statustipo) {
-                         case "A Fazer":
-                          $afazer=$afazer+1;
-                           break;
-                           case 'Para Aprovação':
-                           $paraaprovacao=$paraaprovacao+1;
-                           break;
-                           case 'Com Aprovador':
-                           $comaprovador=$comaprovador+1;
-                           break;
-                           case 'Em Andamento':
-                           $emandamento = $emandamento+1;
-                           break;
-                           case 'Concluído':
-                           $concluido=$concluido+1;
-                           break;
-                           case 'Devolvida':
-                           $devolvida=$devolvida+1;
-                           break;
-                           case 'Arquivado':
-                           $arquivado=$arquivado+1;
-                           break;
-                         default:
-                           # code...
-                           break;
-                       };
-                       };
-                          
-                      
-                      if($afazer==$total){
-                        $conteudobutao="A Fazer";
-                        $cor="btn-default";
-                      }elseif ($paraaprovacao>=1) {
-                        $conteudobutao="Para Aprovação";
-                        $cor="btn-warning";
-                      }elseif ($comaprovador>=1) {
-                        $conteudobutao="Com Aprovador";
-                        $cor="btn-danger";
-                      }elseif ($devolvida>=1) {
-                        $conteudobutao="Devolvida";
-                        $cor="btn-danger";  
-                      }elseif ($emandamento>=1) {
-                        $conteudobutao="Em Andamento";
-                        $cor="btn-success";
-                      }elseif ($concluido==$total) {
-                        $conteudobutao="Concluído";
-                        $cor="btn-warning";
-                      };
-
                       @endphp
 
                       <button type="button" class="btn {{$cor}} btn-xs"><a style="color: black"  href="/painel/notificar/tarefas/{{$notificacao->id}}">{{$conteudobutao}}</a></button>
