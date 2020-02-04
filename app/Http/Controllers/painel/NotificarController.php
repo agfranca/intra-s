@@ -32,6 +32,7 @@ class NotificarController extends Controller
         return view('painel.notificacao.index', compact('departamentos','notificacoes'));
 
         }else{
+            dd('oi');
             return view('painel.index');
         }
     }
