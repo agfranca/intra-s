@@ -88,9 +88,9 @@
 
 
                       @php
-                       $status = $notificacao->tarefa->where('status','<>','Concluído');
-                       //$status->all();
-                       $total = $status->count();
+                       // $status = $notificacao->tarefa->where('status','<>','Concluído');
+                       // //$status->all();
+                       // $total = $status->count();
 
                        $contador=0;
                        $afazer =0;
