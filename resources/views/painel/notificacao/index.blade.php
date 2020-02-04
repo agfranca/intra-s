@@ -85,7 +85,7 @@
 
                     <td>
 
-
+                      {{-- RETIREI o Conteudo DAQUI --}}
 
                     </td>
                     <td>{{ $notificacao -> nome}}</td>
@@ -99,46 +99,7 @@
 
                     <td>
                       
-                      <form method="GET" action="{{route('painel.departamentos.edit', $notificacao)}}" style="display: inline">
-                      <button class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Editar"> <i class="fa fa-pencil"></i> </button>
-                      </form>
-
-
-
-                      @php
-                      $tarefas = DB::table('tarefas')
-                                ->where('project_id', '=', $notificacao->id)
-                                ->get();
-                      $anexoscount =0;
-                      $comentarioscount =0;
-                      foreach ($tarefas as $tarefa) {
-
-                      $anexoscountar = DB::table('arquivo__tarefas')
-                        ->where('tarefas_id', '=', $tarefa->id)
-                        ->count();
-                      $anexoscount = $anexoscount+$anexoscountar;  
- 
-                      $comentarioscountar = DB::table('comentarios')
-                      ->where('tarefas_id', '=', $tarefa->id)
-                      ->whereNull('deleted_at')
-                      ->count();
-                      $comentarioscount = $comentarioscount+$comentarioscountar;
-                      }
-
-                    @endphp
-
-                     @if ($notificacao->projecttype->combo ==0)
-                      
-                      <a class="btn btn-default btn-sm" href="/painel/tarefas/{{ $tarefa->id}}/anexos"><span class="glyphicon glyphicon-paperclip" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Adicionar Anexos"><b style="padding-left: 2px;">{{$anexoscount}}</b></span></a>
-
-                      <a class="btn btn-default btn-sm" href="/painel/tarefas/comentarios/{{ $tarefa->id}}"><span class="glyphicon glyphicon-comment" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Comentários"><b style="padding-left: 2px;">{{$comentarioscount}}</b></span></a>
-                      
-                    @else
-                      
-                        <a class="btn btn-default btn-sm" href="/painel/notificar/tarefas/{{$notificacao->id}}"><span class="glyphicon glyphicon-paperclip" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Adicionar Anexos"><b style="padding-left: 2px;">{{$anexoscount}}</b></span></a>
-
-                        <a class="btn btn-default btn-sm" href="/painel/notificar/tarefas/{{$notificacao->id}}"><span class="glyphicon glyphicon-comment" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Comentários"><b style="padding-left: 2px;">{{$comentarioscount}}</b></span></a>
-                    @endif
+                      {{-- REtireo o conteudo daqui --}}
 
 
                     </td>   
