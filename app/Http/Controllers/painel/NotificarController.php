@@ -254,7 +254,7 @@ public function tarefasdoprojeto($projeto)
             $tarefa->projecttype_id = $request->projecttype;
             $tarefa->departamento_id = $request->departamento;
             $tarefa->status = 'Com Aprovador';
-            dd("Cheguei Aqui");
+            //dd("Cheguei Aqui");
             $tarefa->save(); 
 
             }        
