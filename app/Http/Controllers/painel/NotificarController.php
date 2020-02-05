@@ -242,9 +242,9 @@ public function tarefasdoprojeto($projeto)
             }else{
 
             $projecttype=Projecttype::where('id',$projecttype)->first();
-            dd($projecttype->nome);
             $tarefa = new Tarefa;
             $tarefa->nome = $projecttype->nome." - ".$request->nome;
+            dd($tarefa->nome);
             $tarefa->descricao = $request->descricao;
             //Ajustado a Data para salvar no Banco
             $data = str_replace("/", "-", $request->data);
