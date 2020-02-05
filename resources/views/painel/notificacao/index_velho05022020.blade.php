@@ -79,15 +79,20 @@
             </thead>
             <tbody>
     
+    
              @foreach($notificacoes as $notificacao)
                   <tr>
 
                     <td>
 
+
+
                       @php
-                       $status = $notificacao->tarefa->where('status','<>','Concluído');
-                       //$status->all();
-                       $total = $status->count();
+                      $ddd=$notificacao->tarefa->all();
+                      dd($ddd);
+                       //$status = $notificacao->tarefa->where('status','<>','Concluído');
+                       // //$status->all();
+                       // $total = $status->count();
 
                        $contador=0;
                        $afazer =0;
@@ -100,63 +105,13 @@
                        $conteudobutao="";
                        $cor="";
                       //dd($status->count());
-                      
-                      foreach($status as $statu){
-                      
-                       $statustipo = $statu->status;
-                        //dd($statustipo);
-                       switch ($statustipo) {
-                         case "A Fazer":
-                          $afazer=$afazer+1;
-                           break;
-                           case 'Para Aprovação':
-                           $paraaprovacao=$paraaprovacao+1;
-                           break;
-                           case 'Com Aprovador':
-                           $comaprovador=$comaprovador+1;
-                           break;
-                           case 'Em Andamento':
-                           $emandamento = $emandamento+1;
-                           break;
-                           case 'Concluído':
-                           $concluido=$concluido+1;
-                           break;
-                           case 'Devolvida':
-                           $devolvida=$devolvida+1;
-                           break;
-                           case 'Arquivado':
-                           $arquivado=$arquivado+1;
-                           break;
-                         default:
-                           # code...
-                           break;
-                       };
-                       };
-                          
-                      
-                      if($afazer==$total){
-                        $conteudobutao="A Fazer";
-                        $cor="btn-default";
-                      }elseif ($paraaprovacao>=1) {
-                        $conteudobutao="Para Aprovação";
-                        $cor="btn-warning";
-                      }elseif ($comaprovador>=1) {
-                        $conteudobutao="Com Aprovador";
-                        $cor="btn-danger";
-                      }elseif ($devolvida>=1) {
-                        $conteudobutao="Devolvida";
-                        $cor="btn-danger";  
-                      }elseif ($emandamento>=1) {
-                        $conteudobutao="Em Andamento";
-                        $cor="btn-success";
-                      }elseif ($concluido==$total) {
-                        $conteudobutao="Concluído";
-                        $cor="btn-warning";
-                      };
-
                       @endphp
 
-                      <button type="button" class="btn {{$cor}} btn-xs"><a style="color: black"  href="/painel/notificar/tarefas/{{$notificacao->id}}">{{$conteudobutao}}</a></button></td>
+                      <button type="button" class="btn {{$cor}} btn-xs"><a style="color: black"  href="/painel/notificar/tarefas/{{$notificacao->id}}">{{$conteudobutao}}</a></button>
+
+                      {{-- RETIREI o Conteudo DAQUI --}}
+
+                    </td>
                     <td>{{ $notificacao -> nome}}</td>
                     <td>{{ $notificacao->projecttype->nome}}</td>
                     <td>{{ $notificacao->departamento->nome}}</td>
@@ -165,7 +120,9 @@
                     <td>{{ $notificacao->departamento->empresa->nome}}</td> 
                     {{-- <td>{{ $usuario -> departamento_id}}</td> --}}
                     
+
                     <td>
+                      
                       
                       <form method="GET" action="{{route('painel.departamentos.edit', $notificacao)}}" style="display: inline">
                       <button class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Editar"> <i class="fa fa-pencil"></i> </button>
@@ -207,6 +164,7 @@
 
                         <a class="btn btn-default btn-sm" href="/painel/notificar/tarefas/{{$notificacao->id}}"><span class="glyphicon glyphicon-comment" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Comentários"><b style="padding-left: 2px;">{{$comentarioscount}}</b></span></a>
                     @endif
+
 
 
                     </td>   
