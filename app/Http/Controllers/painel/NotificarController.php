@@ -248,7 +248,6 @@ public function tarefasdoprojeto($projeto)
             //Ajustado a Data para salvar no Banco
             $data = str_replace("/", "-", $request->data);
             $databanco = date('Y-m-d', strtotime($data));
-            dd($databanco);
             $tarefa->entrega = $databanco;
             $tarefa->idcriadopor = $request->user_id;
             $tarefa->project_id = $project->id;
@@ -256,6 +255,7 @@ public function tarefasdoprojeto($projeto)
             $tarefa->departamento_id = $request->departamento;
             $tarefa->status = 'Com Aprovador';
             $tarefa->save(); 
+            dd("Cheguei Aqui");
 
             }        
         
