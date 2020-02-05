@@ -240,8 +240,9 @@ public function tarefasdoprojeto($projeto)
                 }
 
             }else{
-            dd('Aqui');
+
             $projecttype=Projecttype::where('id',$projecttype)->first();
+            dd($projecttype->nome);
             $tarefa = new Tarefa;
             $tarefa->nome = $projecttype->nome." - ".$request->nome;
             $tarefa->descricao = $request->descricao;
