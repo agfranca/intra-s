@@ -244,11 +244,11 @@ public function tarefasdoprojeto($projeto)
             $projecttype=Projecttype::where('id',$projecttype)->first();
             $tarefa = new Tarefa;
             $tarefa->nome = $projecttype->nome." - ".$request->nome;
-            dd($tarefa->nome);
             $tarefa->descricao = $request->descricao;
             //Ajustado a Data para salvar no Banco
             $data = str_replace("/", "-", $request->data);
             $databanco = date('Y-m-d', strtotime($data));
+            dd($databanco);
             $tarefa->entrega = $databanco;
             $tarefa->idcriadopor = $request->user_id;
             $tarefa->project_id = $project->id;
