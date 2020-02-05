@@ -219,7 +219,7 @@ public function tarefasdoprojeto($projeto)
             $tarefascombo=Projecttypecombo::where('projecttype_id',$projecttype)->get();
             $tarefascombototal = $tarefascombo->count();
             if ($tarefascombototal>0) {
-        //dd('Não Tem Aprovador e Ja Gravou o Projeto a Tarefa é Combo');  
+                //dd('Não Tem Aprovador e Ja Gravou o Projeto a Tarefa é Combo');  
                 foreach ($tarefascombo as $tarefa) {
                     //Salvar a Tarefa
                     $projecttype=Projecttype::where('id',$tarefa->projecttype_filho)->first();
@@ -240,6 +240,7 @@ public function tarefasdoprojeto($projeto)
                 }
 
             }else{
+            dd('Aqui');
             $projecttype=Projecttype::where('id',$projecttype)->first();
             $tarefa = new Tarefa;
             $tarefa->nome = $projecttype->nome." - ".$request->nome;
