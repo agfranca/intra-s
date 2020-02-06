@@ -348,7 +348,7 @@
         Route::get('painel/tarefas/departamento/calendario', 'painel\TarefasController@calendarioDepartamento')->name('painel.tarefas.calendarioDepartamento');
 
         
-        Route::get('painel/tarefas/calendariodados', 'painel\TarefasController@calendarioDadosTarefasEnviadas')->name('painel.tarefas.calendarioDados');
+        Route::get('painel/tarefas/calendariodados', 'painel\TarefasController@calendarioDados')->name('painel.tarefas.calendarioDados');
 
         Route::get('painel/tarefas/calendariodados/departamento', 'painel\TarefasController@calendarioDadosDepartamento')->name('painel.tarefas.calendarioDadosDepartamento');
 
