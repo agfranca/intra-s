@@ -1829,7 +1829,6 @@ public function kanbanEnviadasTodasDepartamento()
         
         //Dados
         $tarefas = Tarefa::where('departamento_id', '=', $UsuarioDepartamento)
-                    ->where('iddestino', '=', Null)
                     ->where('status','<>','Com Aprovador')
                     ->where('status','<>','Devolvida')
                     ->select('nome as title', 'entrega as start', 'descricao','id','prioridade')
