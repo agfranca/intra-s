@@ -30,6 +30,7 @@ class NotificarController extends Controller
         $notificacoes = Project::projetos();
         //dd($notificacoes);
         return view('painel.notificacao.index', compact('departamentos','notificacoes'));
+        
 
         }else{
 

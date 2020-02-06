@@ -68,19 +68,22 @@
             <thead>
             <tr>
 
-                  
+                  <th style='width: 1%;'>Id</th>
                   <th style='width: 1%;'>Status</th>
-                  <th style='width: 28%;'>Notificação</th>
-                  <th style='width: 10%;'>Tipo</th>
-                  <th style='width: 10%;'>Departamento</th>
-                  <th style='width: 10%;'>Empresa</th>
-                  <th style='width: 40%;'>Ações</th>
+                  <th style='width: 57%;'>Notificação</th>
+                  <th style='width: 15%;'>Tipo</th>
+                  {{-- <th style='width: 10%;'>Departamento</th>
+                  <th style='width: 10%;'>Empresa</th> --}}
+                  <th style='width: 25%;'>Ações</th>
             </tr>
             </thead>
             <tbody>
     
              @foreach($notificacoes as $notificacao)
                   <tr>
+                    <td>
+                      {{ $notificacao -> id}}
+                    </td> 
 
                     <td>
 
@@ -159,10 +162,10 @@
                       <button type="button" class="btn {{$cor}} btn-xs"><a style="color: black"  href="/painel/notificar/tarefas/{{$notificacao->id}}">{{$conteudobutao}}</a></button></td>
                     <td>{{ $notificacao -> nome}}</td>
                     <td>{{ $notificacao->projecttype->nome}}</td>
-                    <td>{{ $notificacao->departamento->nome}}</td>
+                    {{-- <td>{{ $notificacao->departamento->nome}}</td> --}}
                     {{-- <td>{{ $usuario -> email}}</td>
                     <td>{{ $usuario->departamento->nome}}</td> --}}
-                    <td>{{ $notificacao->departamento->empresa->nome}}</td> 
+                    {{-- <td>{{ $notificacao->departamento->empresa->nome}}</td> --}} 
                     {{-- <td>{{ $usuario -> departamento_id}}</td> --}}
                     
                     <td>

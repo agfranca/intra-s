@@ -66,18 +66,18 @@
             <thead>
             <tr>
 
-                  
+                  <th style='width: 2%;'>Id</th>
                   <th style='width: 28%;'>Notificação</th>
                   <th style='width: 40%;'>Descrição</th>
                   <th style='width: 8%;'>Tipo</th>
-                  <th style='width: 24%;'>Ações</th>
+                  <th style='width: 22%;'>Ações</th>
             </tr>
             </thead>
             <tbody>
     
              @foreach($notificacoes as $notificacao)
                   <tr>
-
+                    <td>{{ $notificacao -> id}}</td>
                     <td>{{ $notificacao -> nome}}</td>
                     <td>{!! $notificacao->descricao!!}</td>
                     <td>{{ $notificacao->projecttype->nome}}</td>
